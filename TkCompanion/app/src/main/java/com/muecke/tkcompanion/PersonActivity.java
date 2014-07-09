@@ -1,17 +1,33 @@
 package com.muecke.tkcompanion;
 
-import android.app.Activity;
+import android.app.ListActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
+
+import com.muecke.tkcompanion.com.muecke.tkcompanion.model.Person;
+import com.muecke.tkcompanion.db.PersonDataSource;
+
+import java.util.List;
 
 
-public class person extends Activity {
+public class PersonActivity extends ListActivity {
+
+    private PersonDataSource datasource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person);
+
+        datasource = new PersonDataSource(this);
+        datasource.open();
+
+        List<Person> values = datasource.getAllPerson();
+        ArrayAdapter<Person> adapter = new ArrayAdapter<Person>(this,
+                android.R.layout.simple_list_item_1, values);
+        setListAdapter(adapter);
     }
 
 
