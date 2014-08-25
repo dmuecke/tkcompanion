@@ -6,14 +6,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class person extends Activity {
+public class PersonActivity extends Activity {
+
+   public static void main(String[] args) {
+       System.out.println("I'm a PersonActivity!");
+   }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_person);
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
