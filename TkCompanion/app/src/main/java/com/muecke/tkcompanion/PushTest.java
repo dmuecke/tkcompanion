@@ -6,6 +6,6 @@ package com.muecke.tkcompanion;
 public class PushTest {
 
     public static void main(String[] args) {
-        System.out.println("Test");
+        System.out.println("Test 12345");
     }
 }
