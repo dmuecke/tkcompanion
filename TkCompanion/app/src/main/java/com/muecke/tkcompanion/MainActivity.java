@@ -14,11 +14,10 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-        View click = findViewById(R.id.button_interval);
-        click.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.button_interval).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent launchactivity= new Intent(MainActivity.this,StopWatchActivity.class);
+                Intent launchactivity= new Intent(MainActivity.this,IntervalSettingsActivity.class);
                 startActivity(launchactivity);
             }
         });

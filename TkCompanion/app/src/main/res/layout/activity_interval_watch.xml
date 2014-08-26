@@ -2,48 +2,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    tools:context="com.muecke.tkcompanion.StopWatchActivity"
+    tools:context="com.muecke.tkcompanion.IntervalWatchActivity"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="1">
+        android:layout_height="wrap_content">
 
-    <Chronometer
+        <Chronometer
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/chronometer"
         android:format="%s"
         android:textSize="40sp"
-        android:layout_weight="0.35" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Interval:"
-            android:id="@+id/textView2"
-            android:textSize="40sp" />
-
-        <EditText
-        android:layout_width="164dp"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:ems="10"
-        android:id="@+id/interval"
-        android:layout_gravity="center_horizontal"
-        android:text="60"
-        android:textSize="40sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Round: 0"
-            android:id="@+id/round"
-            android:textSize="40sp" />
-
-    </LinearLayout>
-    <LinearLayout
+            android:layout_centerHorizontal="true" />
+    </RelativeLayout>
+    <RelativeLayout
     android:layout_width="fill_parent"
     android:layout_height="wrap_content">
     <Button
@@ -51,18 +25,21 @@
         android:layout_height="wrap_content"
         android:text="Start"
         android:id="@+id/start_button"
-        android:textSize="40sp" />
+        android:textSize="40sp"
+        android:layout_alignParentLeft="true"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Stop"
         android:id="@+id/stop_button"
-        android:textSize="40sp" />
+        android:textSize="40sp"
+        android:enabled="false"
+        android:layout_alignParentRight="true"/>
 
 
 
-    </LinearLayout>
+    </RelativeLayout>
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
@@ -71,7 +48,8 @@
             android:layout_height="wrap_content"
             android:text="Snap"
             android:id="@+id/snap_button"
-            android:textSize="60sp" />
+            android:textSize="40sp"
+            android:enabled="false" />
 
         </LinearLayout>
 

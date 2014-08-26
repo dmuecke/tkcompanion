@@ -17,8 +17,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".StopWatchActivity"
+            android:name=".IntervalWatchActivity"
             android:label="@string/title_activity_stop_watch" >
+        </activity>
+        <activity
+            android:name=".IntervalSettingsActivity"
+            android:label="@string/title_activity_interval_settings" >
         </activity>
     </application>
 
