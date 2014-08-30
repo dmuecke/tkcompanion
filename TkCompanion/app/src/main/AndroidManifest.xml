@@ -24,6 +24,10 @@
             android:name=".IntervalSettingsActivity"
             android:label="@string/title_activity_interval_settings" >
         </activity>
+        <activity
+            android:name=".ListResultsActivity"
+            android:label="@string/title_activity_list_results" >
+        </activity>
     </application>
 
 </manifest>

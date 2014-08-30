@@ -8,6 +8,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class IntervalSettingsActivity extends Activity {
 
@@ -20,13 +23,18 @@ public class IntervalSettingsActivity extends Activity {
         findViewById(R.id.button_save).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final String cntSwimmers = ((EditText) findViewById(R.id.count_swimmers)).getText().toString();
+                final int cntSwimmers = Integer.parseInt(((EditText) findViewById(R.id.count_swimmers)).getText().toString());
                 final String intervalTime = ((EditText)findViewById(R.id.interval_time)).getText().toString();
                 final String distance = ((EditText)findViewById(R.id.distance)).getText().toString();
                 final String gapTime = ((EditText)findViewById(R.id.gap_time)).getText().toString();
 
                 Intent launchactivity= new Intent(IntervalSettingsActivity.this,IntervalWatchActivity.class);
-                launchactivity.putExtra("CNT_SWIMMERS", Integer.parseInt(cntSwimmers));
+                String[] values = new String[] {"Cosima","Julia","Lilly","Jasmin","Raphael","Martin","Selina","Mats"};
+                final ArrayList<String> list = new ArrayList<String>();
+                for (int i = 0; (i < values.length) && (i < cntSwimmers); ++i) {
+                    list.add(values[i]);
+                }
+                launchactivity.putStringArrayListExtra("SWIMMERS", list);
                 launchactivity.putExtra("INTERVAL_TIME", Integer.parseInt(intervalTime));
                 launchactivity.putExtra("DISTANCE", Integer.parseInt(distance));
                 launchactivity.putExtra("GAP_TIME", Integer.parseInt(gapTime));

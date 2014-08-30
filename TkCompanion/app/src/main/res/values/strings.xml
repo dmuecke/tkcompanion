@@ -7,5 +7,6 @@
     <string name="title_activity_stop_watch">StopWatchActivity</string>
     <string name="enter_text">Interval:</string>
     <string name="title_activity_interval_settings">IntervalSettingsActivity</string>
+    <string name="title_activity_list_results">ListResultsActivity</string>
 
 </resources>

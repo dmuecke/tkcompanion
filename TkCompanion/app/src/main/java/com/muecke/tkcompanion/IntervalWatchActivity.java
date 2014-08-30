@@ -1,27 +1,32 @@
 package com.muecke.tkcompanion;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Chronometer;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.muecke.tkcompanion.model.Swimmer;
+
+import java.util.ArrayList;
 
 
 public class IntervalWatchActivity extends Activity {
     private int interval = 40;
     private int distance = 25;
-    private int swimmers = 1;
     private int gap_time = 5;
-    private int snap_round = 1;
+    private boolean timer_running = false;
+    private int lastPosition = -1;
+    private ArrayList<Swimmer> swimmerList;
 
-    private int round;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,57 +34,41 @@ public class IntervalWatchActivity extends Activity {
         setContentView(R.layout.activity_interval_watch);
         final Chronometer chronometer = (Chronometer) findViewById(R.id.chronometer);
 
+        Bundle extras = getIntent().getExtras();
+        swimmerList = new ArrayList<Swimmer>();
+        if (extras != null) {
+            interval=extras.getInt("INTERVAL_TIME",40);
+            distance=extras.getInt("DISTANCE",25);
+            for (String name : extras.getStringArrayList("SWIMMERS")) {
+                swimmerList.add(new Swimmer(name));
+            }
 
-        final ListView listView = (ListView) findViewById(R.id.listView);
-        final ArrayAdapter adaptor = new ArrayAdapter(this,android.R.layout.simple_list_item_1);
-        listView.setAdapter(adaptor);
+            gap_time = extras.getInt("GAP_TIME", 5);
 
-        final Button snapBtn = (Button) findViewById(R.id.snap_button);
-        final Button stpBtn = (Button) findViewById(R.id.stop_button);
+        }
+        final ListView listView = (ListView) findViewById(R.id.list_swimmer);
+
+
+        final LazyAdapter adapter = new LazyAdapter(this,swimmerList);
+
         final Button startBtn = (Button) findViewById(R.id.start_button);
-
-        snapBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                long elapsed = SystemClock.elapsedRealtime() - chronometer.getBase();
-                long seconds = elapsed / 1000;
-                seconds -= (snap_round-1)*gap_time;
-
-                adaptor.add("Round " + round + "  Swimmer" + snap_round + "    " + seconds + "." + elapsed % 1000);
-                if (swimmers > snap_round) {
-                    snap_round++;
-                } else {
-                    snapBtn.setEnabled(false);
-                }
-                snapBtn.setText("Snap Round " + round + " Swimmer" + snap_round);
-
-            }
-        });
-
-        stpBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                chronometer.stop();
-                snapBtn.setEnabled(false);
-                stpBtn.setEnabled(false);
-                startBtn.setEnabled(true);
-            }
-        });
 
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                round = 1;
-                snap_round =1;
-                chronometer.setBase(SystemClock.elapsedRealtime());
-                chronometer.start();
-                snapBtn.setText("Snap Round " + round + " Swimmer" + snap_round);
+                if (!timer_running) {
+                    timer_running=true;
+                    chronometer.setBase(SystemClock.elapsedRealtime());
+                    chronometer.start();
+                    startBtn.setText("Stop");
+                } else {
+                    chronometer.stop();
+                    startBtn.setText("Start");
+                    timer_running=false;
 
-                adaptor.clear();
-                snapBtn.setEnabled(true);
-                stpBtn.setEnabled(true);
-                startBtn.setEnabled(false);
+                }
+
+
             }
         });
 
@@ -87,34 +76,56 @@ public class IntervalWatchActivity extends Activity {
             @Override
             public void onChronometerTick(Chronometer chrono) {
                 long elapsed = (SystemClock.elapsedRealtime() - chrono.getBase()) / 1000;
-                int maxTime = interval;
-                if (maxTime <= elapsed) {
-                    chrono.setBase(SystemClock.elapsedRealtime());
-                    round++;
-                    snap_round = 1;
 
-                    snapBtn.setText("Snap Round " + round + " Swimmer" + snap_round);
-                    snapBtn.setEnabled(true);
+                if (interval <= elapsed) {
+                    chrono.setBase(SystemClock.elapsedRealtime());
+                    elapsed=0;
+                    lastPosition=-1;
                 }
-                int countDownTime = (int) (maxTime - elapsed);
-                if (countDownTime > 4 && countDownTime <= 5) {
+                int countDownTime = (int) (interval - elapsed);
+                if (countDownTime == 5) {
                     Toast.makeText(getApplicationContext(), "Set!", Toast.LENGTH_SHORT).show();
                 }
-                if (countDownTime > 1 && countDownTime <= 2) {
+                if (countDownTime == 2) {
                     Toast.makeText(getApplicationContext(), "Go!", Toast.LENGTH_SHORT).show();
+                }
+
+                // set adjusted push off time
+                if (elapsed % gap_time == 0) {
+                    int position = (int) (elapsed / gap_time);
+                    if (lastPosition != position && position < swimmerList.size()) {
+                        swimmerList.get(position).setBaseTime(SystemClock.elapsedRealtime());
+                        lastPosition=position; // avoid double 0
+                        adapter.notifyDataSetChanged();
+                    }
+
+                }
+            }
+        });
+
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Swimmer swimmer = (Swimmer) parent.getItemAtPosition(position);
+
+                if (timer_running) {
+                    swimmer.setLapTime((int) ((SystemClock.elapsedRealtime() - swimmer.getBaseTime()) / 100));
+                    adapter.notifyDataSetChanged();
+                    if (position + 1 == swimmerList.size()) {
+                        position = -1;
+                    }
+                    listView.setSelection(position + 1);
+                } else {
+                    Intent launchactivity= new Intent(IntervalWatchActivity.this,ListResultsActivity.class);
+                    launchactivity.putExtra("SWIMMER", swimmer);
+                    startActivity(launchactivity);
                 }
 
             }
         });
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            interval=extras.getInt("INTERVAL_TIME",40);
-            distance=extras.getInt("DISTANCE",25);
-            swimmers=extras.getInt("CNT_SWIMMERS",25);
-            gap_time = extras.getInt("GAP_TIME", 5);
-
-        }
     }
 
 

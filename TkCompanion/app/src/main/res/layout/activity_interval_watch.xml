@@ -28,40 +28,18 @@
         android:textSize="40sp"
         android:layout_alignParentLeft="true"/>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stop"
-        android:id="@+id/stop_button"
-        android:textSize="40sp"
-        android:enabled="false"
-        android:layout_alignParentRight="true"/>
-
-
 
     </RelativeLayout>
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        <Button
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="Snap"
-            android:id="@+id/snap_button"
-            android:textSize="40sp"
-            android:enabled="false" />
-
-        </LinearLayout>
 
     <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/listView"
+        android:id="@+id/list_swimmer"
         android:smoothScrollbar="false"
-        android:transcriptMode="alwaysScroll"
         android:stackFromBottom="true"
         android:fastScrollEnabled="true"
         android:fastScrollAlwaysVisible="true"
-        android:scrollingCache="true" />
+        android:scrollingCache="true"
+        android:background="@android:color/background_light" />
 
 </LinearLayout>
