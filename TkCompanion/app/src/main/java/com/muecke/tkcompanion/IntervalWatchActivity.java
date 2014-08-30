@@ -77,11 +77,6 @@ public class IntervalWatchActivity extends Activity {
             public void onChronometerTick(Chronometer chrono) {
                 long elapsed = (SystemClock.elapsedRealtime() - chrono.getBase()) / 1000;
 
-                if (interval <= elapsed) {
-                    chrono.setBase(SystemClock.elapsedRealtime());
-                    elapsed=0;
-                    lastPosition=-1;
-                }
                 int countDownTime = (int) (interval - elapsed);
                 if (countDownTime == 5) {
                     Toast.makeText(getApplicationContext(), "Set!", Toast.LENGTH_SHORT).show();
@@ -89,11 +84,15 @@ public class IntervalWatchActivity extends Activity {
                 if (countDownTime == 2) {
                     Toast.makeText(getApplicationContext(), "Go!", Toast.LENGTH_SHORT).show();
                 }
+                if (countDownTime == 0) {
+                    lastPosition=-1;
+                    chrono.setBase(SystemClock.elapsedRealtime());
 
-                // set adjusted push off time
-                if (elapsed % gap_time == 0) {
+                } else  if (elapsed % gap_time == 0) {
+
                     int position = (int) (elapsed / gap_time);
-                    if (lastPosition != position && position < swimmerList.size()) {
+
+                    if ((lastPosition != position) && (position < swimmerList.size())) {
                         swimmerList.get(position).setBaseTime(SystemClock.elapsedRealtime());
                         lastPosition=position; // avoid double 0
                         adapter.notifyDataSetChanged();
