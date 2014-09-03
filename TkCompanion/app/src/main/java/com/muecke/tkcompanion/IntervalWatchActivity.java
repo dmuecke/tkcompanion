@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.muecke.tkcompanion.model.Swimmer;
@@ -23,9 +24,8 @@ public class IntervalWatchActivity extends Activity {
     private int interval = 40;
     private int distance = 25;
     private int gap_time = 5;
-    private boolean timer_running = false;
-    private int lastPosition = -1;
     private ArrayList<Swimmer> swimmerList;
+    private boolean timer_running = false;
 
 
     @Override
@@ -33,7 +33,6 @@ public class IntervalWatchActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interval_watch);
         final Chronometer chronometer = (Chronometer) findViewById(R.id.chronometer);
-
         Bundle extras = getIntent().getExtras();
         swimmerList = new ArrayList<Swimmer>();
         if (extras != null) {
@@ -47,6 +46,8 @@ public class IntervalWatchActivity extends Activity {
 
         }
         final ListView listView = (ListView) findViewById(R.id.list_swimmer);
+        final TextView countDown = (TextView) findViewById(R.id.count_down);
+        countDown.setText(String.format("%02d",interval));
 
 
         final LazyAdapter adapter = new LazyAdapter(this,swimmerList);
@@ -57,10 +58,10 @@ public class IntervalWatchActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if (!timer_running) {
-                    timer_running=true;
                     chronometer.setBase(SystemClock.elapsedRealtime());
-                    chronometer.start();
+                    timer_running=true;
                     startBtn.setText("Stop");
+                    chronometer.start();
                 } else {
                     chronometer.stop();
                     startBtn.setText("Start");
@@ -75,30 +76,30 @@ public class IntervalWatchActivity extends Activity {
         chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
             public void onChronometerTick(Chronometer chrono) {
+                if (!timer_running) {
+                    return;
+                }
                 long elapsed = (SystemClock.elapsedRealtime() - chrono.getBase()) / 1000;
+                int countUpTime = (int) (elapsed % interval);
+                int countDownTime = interval - countUpTime;
 
-                int countDownTime = (int) (interval - elapsed);
                 if (countDownTime == 5) {
                     Toast.makeText(getApplicationContext(), "Set!", Toast.LENGTH_SHORT).show();
                 }
                 if (countDownTime == 2) {
                     Toast.makeText(getApplicationContext(), "Go!", Toast.LENGTH_SHORT).show();
                 }
-                if (countDownTime == 0) {
-                    lastPosition=-1;
-                    chrono.setBase(SystemClock.elapsedRealtime());
+                if (countUpTime % gap_time == 0) {
 
-                } else  if (elapsed % gap_time == 0) {
+                    int position = countUpTime / gap_time;
+                    if ((position < swimmerList.size())) {
 
-                    int position = (int) (elapsed / gap_time);
-
-                    if ((lastPosition != position) && (position < swimmerList.size())) {
                         swimmerList.get(position).setBaseTime(SystemClock.elapsedRealtime());
-                        lastPosition=position; // avoid double 0
                         adapter.notifyDataSetChanged();
                     }
 
                 }
+                countDown.setText(String.format("%02d", countDownTime));
             }
         });
 

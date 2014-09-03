@@ -8,27 +8,6 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Swimmers:"
-            android:id="@+id/swim_name"
-            android:textSize="20sp"
-            android:layout_alignBottom="@+id/count_swimmers"
-            android:layout_alignParentStart="true" />
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
-            android:ems="10"
-            android:id="@+id/count_swimmers"
-            android:layout_alignParentRight="true"
-            android:text="1"
-            android:textSize="20sp" />
-</RelativeLayout>
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
 
         <TextView
             android:layout_width="wrap_content"
@@ -75,13 +54,13 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
-    <TextView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Distance:"
             android:id="@+id/textView3"
             android:textSize="20sp"
-        android:layout_alignParentLeft="true"/>
+            android:layout_alignParentLeft="true"/>
 
         <EditText
             android:layout_width="wrap_content"
@@ -94,19 +73,34 @@
             android:layout_alignParentRight="true"/>
 
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Save"
-            android:id="@+id/button_save"
-            android:textSize="40sp"
-            android:layout_below="@+id/distance"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="72dp" />
-
-
     </RelativeLayout>
 
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.1"
+        >
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/list_names"
+            android:paddingLeft="10dp" />
+
+    </LinearLayout>
+
+<LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+    <Button
+        android:layout_width="fill_parent"
+        android:text="Save"
+        android:id="@+id/button_save"
+        android:textSize="20sp"
+        android:layout_height="wrap_content" />
+
+    </LinearLayout>
 
 
 </LinearLayout>

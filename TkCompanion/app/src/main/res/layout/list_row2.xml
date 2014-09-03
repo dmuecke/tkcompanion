@@ -21,7 +21,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Time: "
+        android:text="Start Position: "
         android:id="@+id/textView5"
         android:layout_alignStart="@+id/swim_name"
         android:layout_below="@+id/swim_name"
@@ -30,31 +30,12 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="00.0"
-        android:id="@+id/split_time"
+        android:text="0"
+        android:id="@+id/swim_position"
         android:layout_alignParentBottom="false"
         android:layout_toEndOf="@+id/textView5"
         android:textSize="15sp"
         android:layout_below="@+id/swim_name" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Round: "
-        android:id="@+id/count_down"
-        android:layout_toEndOf="@+id/split_time"
-        android:textSize="15sp"
-        android:layout_alignBottom="@+id/split_time"
-        android:layout_marginLeft="@dimen/activity_vertical_margin" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="0"
-        android:id="@+id/text_round"
-        android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@+id/count_down"
-        android:layout_toEndOf="@id/count_down"
-        android:textSize="15sp" />
 
 </RelativeLayout>

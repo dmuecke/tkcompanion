@@ -2,11 +2,10 @@
 <resources>
 
     <string name="app_name">TkCompanion</string>
-    <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_stop_watch">StopWatchActivity</string>
+    <string name="title_activity_stop_watch">TkCompanion Stopwatch</string>
     <string name="enter_text">Interval:</string>
-    <string name="title_activity_interval_settings">IntervalSettingsActivity</string>
-    <string name="title_activity_list_results">ListResultsActivity</string>
+    <string name="title_activity_interval_settings">TkCompanion Interval Settings</string>
+    <string name="title_activity_list_results">TkCompanion Results</string>
 
 </resources>
