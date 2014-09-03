@@ -1,27 +1,32 @@
 package com.muecke.tkcompanion;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 
-public class PersonActivity extends Activity {
-
-   public static void main(String[] args) {
-       System.out.println("I'm a PersonActivity!");
-   }
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_person);
+        setContentView(R.layout.main);
+        findViewById(R.id.button_interval).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent launchactivity= new Intent(MainActivity.this,IntervalSettingsActivity.class);
+                startActivity(launchactivity);
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.person, menu);
+        getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
