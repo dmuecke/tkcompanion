@@ -46,12 +46,12 @@ public class Swimmer implements Serializable {
 
     private int[][] targetTimes;
 
-    public synchronized void setBaseTime(long baseTime) {
+    public void setBaseTime(long baseTime) {
         this.baseTime = baseTime;
         round++;
     }
 
-    public synchronized long getBaseTime() {
+    public long getBaseTime() {
         return baseTime;
     }
 

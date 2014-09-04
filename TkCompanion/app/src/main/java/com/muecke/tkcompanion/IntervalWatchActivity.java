@@ -26,6 +26,7 @@ public class IntervalWatchActivity extends Activity {
     private int gap_time = 5;
     private ArrayList<Swimmer> swimmerList;
     private boolean timer_running = false;
+    private int staggeredInterval;
 
 
     @Override
@@ -43,6 +44,7 @@ public class IntervalWatchActivity extends Activity {
             }
 
             gap_time = extras.getInt("GAP_TIME", 5);
+            staggeredInterval = interval + swimmerList.size() * gap_time;
 
         }
         final ListView listView = (ListView) findViewById(R.id.list_swimmer);
@@ -76,25 +78,39 @@ public class IntervalWatchActivity extends Activity {
         chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
             @Override
             public void onChronometerTick(Chronometer chrono) {
+                final long elapsed = (SystemClock.elapsedRealtime() - chrono.getBase()) / 1000;
+
                 if (!timer_running) {
                     return;
                 }
-                long elapsed = (SystemClock.elapsedRealtime() - chrono.getBase()) / 1000;
-                int countUpTime = (int) (elapsed % interval);
-                int countDownTime = interval - countUpTime;
-
-                if (countDownTime == 5) {
-                    Toast.makeText(getApplicationContext(), "Set!", Toast.LENGTH_SHORT).show();
-                }
-                if (countDownTime == 2) {
-                    Toast.makeText(getApplicationContext(), "Go!", Toast.LENGTH_SHORT).show();
+                final int countUpTime = (int) (elapsed % interval);
+                final int countDownTime = interval - countUpTime;
+                if (swimmerList.size() < 4) {
+                    if (countDownTime == 5) {
+                        Toast.makeText(getApplicationContext(), "Set!", Toast.LENGTH_SHORT).show();
+                    }
+                    if (countDownTime == 2) {
+                        Toast.makeText(getApplicationContext(), "Go!", Toast.LENGTH_SHORT).show();
+                    }
                 }
                 if (countUpTime % gap_time == 0) {
+                    boolean update=false;
 
-                    int position = countUpTime / gap_time;
-                    if ((position < swimmerList.size())) {
+                    Log.d("OnChronometer", "countUp: "+countUpTime + " elapsed:" + elapsed);
 
-                        swimmerList.get(position).setBaseTime(SystemClock.elapsedRealtime());
+                    for (int position = 0; position < swimmerList.size(); position++) {
+                        int pushOff = position*gap_time;
+                        int staggeredElapsed = pushOff;
+                        if (elapsed > pushOff) {
+                            long factor = (elapsed-pushOff) / interval;
+                            staggeredElapsed += factor*interval;
+                        }
+                        if (elapsed == staggeredElapsed) {
+                            swimmerList.get(position).setBaseTime(SystemClock.elapsedRealtime());
+                            update=true;
+                        }
+                    }
+                    if (update) {
                         adapter.notifyDataSetChanged();
                     }
 
@@ -111,12 +127,13 @@ public class IntervalWatchActivity extends Activity {
                 Swimmer swimmer = (Swimmer) parent.getItemAtPosition(position);
 
                 if (timer_running) {
-                    swimmer.setLapTime((int) ((SystemClock.elapsedRealtime() - swimmer.getBaseTime()) / 100));
-                    adapter.notifyDataSetChanged();
+                    long lapTime = ((SystemClock.elapsedRealtime() - swimmer.getBaseTime()) / 100);
+                    swimmer.setLapTime((int) lapTime);
                     if (position + 1 == swimmerList.size()) {
                         position = -1;
                     }
                     listView.setSelection(position + 1);
+                    adapter.notifyDataSetChanged();
                 } else {
                     Intent launchactivity= new Intent(IntervalWatchActivity.this,ListResultsActivity.class);
                     launchactivity.putExtra("SWIMMER", swimmer);
