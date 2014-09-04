@@ -12,7 +12,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Intervalle"
+        android:text="Interval Training"
         android:id="@+id/button_interval"
         android:layout_marginTop="74dp"
         android:layout_centerHorizontal="true" />
