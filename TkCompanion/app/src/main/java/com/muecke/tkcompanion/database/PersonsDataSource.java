@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.muecke.tkcompanion.model.Person;
+
 import java.util.ArrayList;
 import java.util.List;
 

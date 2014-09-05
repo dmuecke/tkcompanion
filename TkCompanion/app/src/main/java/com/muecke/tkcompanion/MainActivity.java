@@ -9,7 +9,7 @@ import android.view.View;
 
 
 public class MainActivity extends Activity {
-
+    private static final int RESULT_SETTINGS = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,10 +35,13 @@ public class MainActivity extends Activity {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings: {
+                Intent i = new Intent( this, SettingsActivity.class);
+                startActivityForResult(i, RESULT_SETTINGS);
+                break;
+            }
         }
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 }

@@ -1,4 +1,4 @@
-package com.muecke.tkcompanion.database;
+package com.muecke.tkcompanion.model;
 
 public class Person {
     public long getId() {
