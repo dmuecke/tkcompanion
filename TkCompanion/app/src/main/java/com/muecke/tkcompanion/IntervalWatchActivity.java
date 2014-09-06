@@ -1,9 +1,14 @@
 package com.muecke.tkcompanion;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -11,6 +16,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,52 +29,163 @@ import java.util.ArrayList;
 public class IntervalWatchActivity extends Activity {
     private int interval = 40;
     private int distance = 25;
-    private int gap_time = 5;
+    private int gapTime = 5;
     private ArrayList<Swimmer> swimmerList;
-    private boolean timer_running = false;
-    private int staggeredInterval;
 
+    enum WatchStatus {
+        RUNNING,
+        STOPPED,
+        FRESH
+    }
+
+    private WatchStatus timerStatus = WatchStatus.FRESH;
+    final Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interval_watch);
         final Chronometer chronometer = (Chronometer) findViewById(R.id.chronometer);
-        Bundle extras = getIntent().getExtras();
         swimmerList = new ArrayList<Swimmer>();
-        if (extras != null) {
-            interval=extras.getInt("INTERVAL_TIME",40);
-            distance=extras.getInt("DISTANCE",25);
-            for (String name : extras.getStringArrayList("SWIMMERS")) {
-                swimmerList.add(new Swimmer(name));
-            }
-
-            gap_time = extras.getInt("GAP_TIME", 5);
-            staggeredInterval = interval + swimmerList.size() * gap_time;
-
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean anonymous_training = pref.getBoolean("anonymous_training", true);
+        Log.d("onCreate", "anon training: "+anonymous_training);
+        if (anonymous_training) {
+            swimmerList.add(new Swimmer("Swimmer1"));
         }
-        final ListView listView = (ListView) findViewById(R.id.list_swimmer);
+
+        final TextView sendOffView = (TextView) findViewById(R.id.send_off_time);
+
+
+
+
+        sendOffView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!timerStatus.equals(WatchStatus.RUNNING)) {
+
+                    final AlertDialog.Builder sendOffDialog = new AlertDialog.Builder(context);
+
+                    sendOffDialog.setTitle("Send-Off Time");
+                    sendOffDialog.setMessage("Define send-off time between swimmers in seconds.");
+
+                    // Set an EditText view to get user input
+                    final EditText sendOffInput = new EditText(context);
+                    sendOffInput.setText(String.valueOf(gapTime));
+                    sendOffDialog.setView(sendOffInput);
+
+                    sendOffDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            gapTime = Integer.parseInt(sendOffInput.getText().toString());
+                            sendOffView.setText(String.format("Send-Off: %d", gapTime));
+                        }
+                    });
+
+                    sendOffDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            // Canceled.
+                        }
+                    });
+
+                    sendOffDialog.show();
+                }
+            }
+        });
+        if (swimmerList.size() < 2) {
+            sendOffView.setVisibility(View.INVISIBLE);
+        }
         final TextView countDown = (TextView) findViewById(R.id.count_down);
         countDown.setText(String.format("%02d",interval));
 
 
+
+
+        final ListView listView = (ListView) findViewById(R.id.list_swimmer);
+
+        countDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!timerStatus.equals(WatchStatus.RUNNING)) {
+
+                    final AlertDialog.Builder intervalDialog = new AlertDialog.Builder(context);
+
+                    intervalDialog.setTitle("Interval Time");
+                    intervalDialog.setMessage("Define send-off time in seconds.");
+
+                    // Set an EditText view to get user input
+                    final EditText input = new EditText(context);
+                    input.setText(String.valueOf(interval));
+                    intervalDialog.setView(input);
+
+                    intervalDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            interval = Integer.parseInt(input.getText().toString());
+                            countDown.setText(String.format("%02d", interval));
+
+                        }
+                    });
+
+                    intervalDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            // Canceled.
+                        }
+                    });
+
+                    intervalDialog.show();
+                }
+            }
+        });
+
         final LazyAdapter adapter = new LazyAdapter(this,swimmerList);
+
+
+        Button moreSwimmerButon = (Button)findViewById(R.id.button_add_swimmer);
+        moreSwimmerButon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!timerStatus.equals(WatchStatus.RUNNING)) {
+                    swimmerList.add(new Swimmer("Swimmer"+(swimmerList.size()+1)));
+                    sendOffView.setVisibility(View.VISIBLE);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
+
 
         final Button startBtn = (Button) findViewById(R.id.start_button);
 
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!timer_running) {
-                    chronometer.setBase(SystemClock.elapsedRealtime());
-                    timer_running=true;
-                    startBtn.setText("Stop");
-                    chronometer.start();
-                } else {
-                    chronometer.stop();
-                    startBtn.setText("Start");
-                    timer_running=false;
+                switch (timerStatus) {
+                    case RUNNING: {
+                        chronometer.stop();
+                        startBtn.setText("Reset");
+                        timerStatus=WatchStatus.STOPPED;
+                        break;
 
+                    }
+                    case FRESH: {
+                        chronometer.setBase(SystemClock.elapsedRealtime());
+                        startBtn.setText("Stop");
+                        timerStatus=WatchStatus.RUNNING;
+                        chronometer.start();
+
+                        break;
+                    }
+                    case STOPPED: {
+                        startBtn.setText("Start");
+                        swimmerList.clear();
+                        swimmerList.add(new Swimmer("Swimmer1"));
+                        sendOffView.setVisibility(View.INVISIBLE);
+                        gapTime =5;
+                        interval=40;
+                        countDown.setText(String.format("%02d", interval));
+
+                        adapter.notifyDataSetChanged();
+                        timerStatus = WatchStatus.FRESH;
+                        break;
+                    }
                 }
 
 
@@ -80,7 +197,7 @@ public class IntervalWatchActivity extends Activity {
             public void onChronometerTick(Chronometer chrono) {
                 final long elapsed = (SystemClock.elapsedRealtime() - chrono.getBase()) / 1000;
 
-                if (!timer_running) {
+                if (!timerStatus.equals(WatchStatus.RUNNING)) {
                     return;
                 }
                 final int countUpTime = (int) (elapsed % interval);
@@ -93,13 +210,13 @@ public class IntervalWatchActivity extends Activity {
                         Toast.makeText(getApplicationContext(), "Go!", Toast.LENGTH_SHORT).show();
                     }
                 }
-                if (countUpTime % gap_time == 0) {
+                if (countUpTime % gapTime == 0) {
                     boolean update=false;
 
                     Log.d("OnChronometer", "countUp: "+countUpTime + " elapsed:" + elapsed);
 
                     for (int position = 0; position < swimmerList.size(); position++) {
-                        int pushOff = position*gap_time;
+                        int pushOff = position * gapTime;
                         int staggeredElapsed = pushOff;
                         if (elapsed > pushOff) {
                             long factor = (elapsed-pushOff) / interval;
@@ -126,7 +243,7 @@ public class IntervalWatchActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Swimmer swimmer = (Swimmer) parent.getItemAtPosition(position);
 
-                if (timer_running) {
+                if (timerStatus.equals(WatchStatus.RUNNING)) {
                     long lapTime = ((SystemClock.elapsedRealtime() - swimmer.getBaseTime()) / 100);
                     swimmer.setLapTime((int) lapTime);
                     if (position + 1 == swimmerList.size()) {

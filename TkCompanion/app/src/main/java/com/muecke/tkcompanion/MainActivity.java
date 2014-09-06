@@ -17,7 +17,7 @@ public class MainActivity extends Activity {
         findViewById(R.id.button_interval).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent launchactivity= new Intent(MainActivity.this,IntervalSettingsActivity.class);
+                Intent launchactivity= new Intent(MainActivity.this,IntervalWatchActivity.class);
                 startActivity(launchactivity);
             }
         });

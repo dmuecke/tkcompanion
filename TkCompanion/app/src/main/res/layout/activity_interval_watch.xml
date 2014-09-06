@@ -41,6 +41,25 @@
             android:layout_toStartOf="@+id/chronometer"
             android:layout_centerVertical="true" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+"
+            android:id="@+id/button_add_swimmer"
+            android:layout_alignTop="@+id/chronometer"
+            android:layout_alignParentStart="false" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send-off: 5"
+            android:id="@+id/send_off_time"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/button_add_swimmer"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:visibility="visible"
+            android:layout_marginLeft="10dp" />
+
 
     </RelativeLayout>
 
