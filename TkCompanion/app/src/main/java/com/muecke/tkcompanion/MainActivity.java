@@ -7,6 +7,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.muecke.tkcompanion.database.PersonsDataSource;
+
 
 public class MainActivity extends Activity {
     private static final int RESULT_SETTINGS = 1;
@@ -21,6 +23,25 @@ public class MainActivity extends Activity {
                 startActivity(launchactivity);
             }
         });
+
+        findViewById(R.id.button_availability).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent launchactivity= new Intent(MainActivity.this,PresenceActivity.class);
+                startActivity(launchactivity);
+            }
+        });
+
+        PersonsDataSource dataSource = new PersonsDataSource(this);
+        dataSource.open();
+        if (dataSource.getAllPersons().isEmpty()) { // add some demo data
+            for (String s : getResources().getStringArray(R.array.demo_persons)) {
+                String[] nameGrup = s.split(",");
+                dataSource.createPerson(nameGrup[0], nameGrup[1]);
+            }
+        }
+        dataSource.close();
+
     }
 
     @Override

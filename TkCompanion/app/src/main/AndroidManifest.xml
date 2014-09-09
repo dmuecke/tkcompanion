@@ -18,7 +18,12 @@
         </activity>
         <activity
             android:name=".IntervalWatchActivity"
-            android:label="@string/title_activity_stop_watch" >
+            android:label="@string/title_activity_stop_watch"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.muecke.tkcompanion.MainActivity" />
+
         </activity>
         <activity
             android:name=".IntervalSettingsActivity"
@@ -31,6 +36,14 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_settings" >
+        </activity>
+        <activity
+            android:name=".PresenceActivity"
+            android:label="@string/title_activity_availability"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.muecke.tkcompanion.MainActivity" />
         </activity>
     </application>
 

@@ -7,5 +7,17 @@
     <string name="enter_text">Interval:</string>
     <string name="title_activity_interval_settings">TkCompanion Interval Settings</string>
     <string name="title_activity_list_results">TkCompanion Results</string>
+    <string name="title_activity_availability">TkCompanion Presence</string>
 
+
+    <string-array name="demo_persons">
+        <item>Lotta,JST</item>
+        <item>Lotte,JST</item>
+        <item>Selina,JST</item>
+        <item>Mats,JST</item>
+        <item>Simon,JST</item>
+        <item>Jasmin,JST</item>
+        <item>Annamaria,JST</item>
+
+    </string-array>
 </resources>

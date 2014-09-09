@@ -1,13 +1,6 @@
 package com.muecke.tkcompanion.model;
 
 public class Person {
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getGroup() {
         return group;
@@ -25,9 +18,16 @@ public class Person {
         this.name = name;
     }
 
-    private long id;
     private String group;
     private String name;
 
+    private boolean present;
 
+    public boolean isPresent() {
+        return present;
+    }
+
+    public void setPresent(boolean present) {
+        this.present = present;
+    }
 }
