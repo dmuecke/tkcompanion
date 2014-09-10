@@ -48,6 +48,10 @@ public class PersonsDataSource {
         return newPerson;
     }
 
+    public void insertPerson(ContentValues values) throws SQLException {
+            database.insert(DataManager.TABLE_PE, null, values);
+    }
+
     public void deletePerson(Person person) {
         String name = person.getName();
         System.out.println("Person deleted with name: " + name);
@@ -77,5 +81,15 @@ public class PersonsDataSource {
         person.setName(cursor.getString(0));
         person.setGroup(cursor.getString(1));
         return person;
+    }
+
+    public String[] createTableColumns(String[] split) {
+        String[] headers = new String[split.length];
+
+        return new String[]{ DataManager.COLUMN_NAME, DataManager.COLUMN_GROUP,
+                DataManager.COLUMN_TARGET_50F,DataManager.COLUMN_TARGET_50B, DataManager.COLUMN_TARGET_50R,DataManager.COLUMN_TARGET_50S,
+                DataManager.COLUMN_TARGET_100F,DataManager.COLUMN_TARGET_100B, DataManager.COLUMN_TARGET_100R,DataManager.COLUMN_TARGET_100S,
+                DataManager.COLUMN_TARGET_200F,DataManager.COLUMN_TARGET_200B, DataManager.COLUMN_TARGET_200R,DataManager.COLUMN_TARGET_200S
+        };
     }
 }

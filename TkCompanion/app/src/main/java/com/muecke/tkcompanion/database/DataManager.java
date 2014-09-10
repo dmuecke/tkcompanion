@@ -24,9 +24,17 @@ public class DataManager extends SQLiteOpenHelper {
     public static final String COLUMN_TARGET_400F = "target_400f";
     public static final String COLUMN_TARGET_800F = "target_800f";
     public static final String COLUMN_TARGET_1500F = "target_1500f";
+    public static final String COLUMN_TARGET_50F = "target_50f";
+    public static final String COLUMN_TARGET_50B = "target_50b";
+    public static final String COLUMN_TARGET_50R = "target_50r";
+    public static final String COLUMN_TARGET_50S = "target_50s";
     private static final String CREATE_TABLE_PE = "create table " + TABLE_PE + "( " +
             COLUMN_NAME + " text primary key, " +
             COLUMN_GROUP + " text not null, " +
+            COLUMN_TARGET_50F + " integer, " +
+            COLUMN_TARGET_50B + " integer, " +
+            COLUMN_TARGET_50R + " integer, " +
+            COLUMN_TARGET_50S + " integer, " +
             COLUMN_TARGET_100F + " integer, " +
             COLUMN_TARGET_100B + " integer, " +
             COLUMN_TARGET_100R + " integer, " +
