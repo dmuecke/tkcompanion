@@ -22,8 +22,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Pool1/Lane1"
+            android:text="Pool1"
             android:id="@+id/session_location"
+            android:textSize="20sp"
+            android:layout_marginLeft="20dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="all"
+            android:id="@+id/filter_group"
             android:textSize="20sp"
             android:layout_marginLeft="20dp" />
 

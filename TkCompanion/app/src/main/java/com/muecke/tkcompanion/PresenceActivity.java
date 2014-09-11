@@ -1,7 +1,9 @@
 package com.muecke.tkcompanion;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.format.DateFormat;
 import android.view.LayoutInflater;
@@ -20,12 +22,18 @@ import com.muecke.tkcompanion.database.PresenceDataSource;
 import com.muecke.tkcompanion.database.PersonsDataSource;
 import com.muecke.tkcompanion.model.Person;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 public class PresenceActivity extends Activity {
 
+    public static final String ALL = "all";
     final Context context = this;
+    int selected=0;
+    private String session;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,13 +43,15 @@ public class PresenceActivity extends Activity {
         PersonsDataSource dataSource = new PersonsDataSource(this);
         dataSource.open();
         final List<Person> allPersons = dataSource.getAllPersons();
+        final String[] allGroups = grepGroups(allPersons);
+
         final ArrayAdapter adapter = new PersonsAdapter(this, allPersons);
         dataSource.close();
-        String session = (DateFormat.format("yyyy-MM-dd", new java.util.Date()).toString());
+        session = (DateFormat.format("yyyy-MM-dd", new java.util.Date()).toString());
 
         PresenceDataSource ds = new PresenceDataSource(this);
         ds.open();
-        List<String> availablePersons = ds.getAllAvailablePersons(session);
+        final List<String> availablePersons = ds.getAllAvailablePersons(session);
         for (Person person : allPersons) {
             person.setPresent(availablePersons.contains(person.getName()));
         }
@@ -61,6 +71,56 @@ public class PresenceActivity extends Activity {
         final TextView sessionView = (TextView) findViewById(R.id.session_name);
         final TextView locationView = (TextView) findViewById(R.id.session_location);
         final TextView durationView = (TextView) findViewById(R.id.session_duration);
+        final TextView groupFilterView = (TextView) findViewById(R.id.filter_group);
+
+        groupFilterView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setTitle("Swim group selector");
+                builder.setSingleChoiceItems(allGroups, selected, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //set to buffKey instead of selected
+                        //(when cancel not save to selected)
+                        selected=which;
+                    }
+                });
+                builder.setCancelable(false).setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        allPersons.clear();
+                        PersonsDataSource dataSource = new PersonsDataSource(context);
+                        dataSource.open();
+                        for (Person person : dataSource.getAllPersons()) {
+                            if (ALL.equals(allGroups[selected]) ||
+                                allGroups[selected].equals(person.getGroup())) {
+
+                                allPersons.add(person);
+                            }
+                        }
+                        dataSource.close();
+
+                        PresenceDataSource ds = new PresenceDataSource(context);
+                        ds.open();
+                        final List<String> availablePersons = ds.getAllAvailablePersons(session);
+                        for (Person person : allPersons) {
+                            person.setPresent(availablePersons.contains(person.getName()));
+                        }
+                        ds.close();
+                        groupFilterView.setText(allGroups[selected]);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Canceled.
+                    }
+                });
+                builder.show();
+
+            }
+        });
 
         sessionView.setText(session);
 
@@ -83,6 +143,16 @@ public class PresenceActivity extends Activity {
                 finish();
             }
         });
+    }
+
+    private String[] grepGroups(List<Person> allPersons) {
+        Set<String> groups = new HashSet<String>();
+        groups.add(ALL);
+        for (Person person : allPersons) {
+            groups.add(person.getGroup());
+        }
+        String[] str = new String[groups.size()];
+        return groups.toArray(str);
     }
 
 
