@@ -6,22 +6,22 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.format.DateFormat;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckedTextView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.muecke.tkcompanion.adapter.PersonsAdapter;
 import com.muecke.tkcompanion.database.PresenceDataSource;
 import com.muecke.tkcompanion.database.PersonsDataSource;
 import com.muecke.tkcompanion.model.Person;
+import com.muecke.tkcompanion.model.Team;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,13 +40,11 @@ public class PresenceActivity extends Activity {
         setContentView(R.layout.activity_presence);
 
         ListView viewPersons = (ListView) findViewById(R.id.listView_persons);
-        PersonsDataSource dataSource = new PersonsDataSource(this);
-        dataSource.open();
-        final List<Person> allPersons = dataSource.getAllPersons();
+        final List<Person> allPersons = new ArrayList<Person>();
+        allPersons.addAll(Team.allPersons);
         final String[] allGroups = grepGroups(allPersons);
 
         final ArrayAdapter adapter = new PersonsAdapter(this, allPersons);
-        dataSource.close();
         session = (DateFormat.format("yyyy-MM-dd", new java.util.Date()).toString());
 
         PresenceDataSource ds = new PresenceDataSource(this);
@@ -90,24 +88,23 @@ public class PresenceActivity extends Activity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         allPersons.clear();
-                        PersonsDataSource dataSource = new PersonsDataSource(context);
-                        dataSource.open();
-                        for (Person person : dataSource.getAllPersons()) {
+                        for (Person person : Team.allPersons) {
+                            person.setPresent(false);
                             if (ALL.equals(allGroups[selected]) ||
                                 allGroups[selected].equals(person.getGroup())) {
 
                                 allPersons.add(person);
                             }
                         }
-                        dataSource.close();
 
                         PresenceDataSource ds = new PresenceDataSource(context);
                         ds.open();
                         final List<String> availablePersons = ds.getAllAvailablePersons(session);
+                        ds.close();
                         for (Person person : allPersons) {
                             person.setPresent(availablePersons.contains(person.getName()));
                         }
-                        ds.close();
+
                         groupFilterView.setText(allGroups[selected]);
                         adapter.notifyDataSetChanged();
                     }
@@ -175,23 +172,4 @@ public class PresenceActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    private class PersonsAdapter extends ArrayAdapter<Person> {
-        public PersonsAdapter(Context context, List<Person> list) {
-            super(context,R.layout.list_row_presence,list);
-        }
-        @Override
-        public View getView(int position, View view, ViewGroup parent) {
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View rowView = view == null ? inflater.inflate(R.layout.list_row_presence, parent,false) : view;
-
-            Person swimmer = getItem(position);
-
-            final CheckedTextView checkedViewSwimmer = (CheckedTextView) rowView.findViewById(R.id.swim_name);
-            checkedViewSwimmer.setChecked(swimmer.isPresent());
-
-            TextView name = (TextView) rowView.findViewById(R.id.swim_name);
-            name.setText(swimmer.getName());
-            return rowView;
-        }
-    }
 }

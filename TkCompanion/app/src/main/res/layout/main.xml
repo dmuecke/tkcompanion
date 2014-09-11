@@ -20,10 +20,20 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Availability"
-        android:id="@+id/button_availability"
+        android:text="Presence"
+        android:id="@+id/button_presence"
+        android:layout_marginTop="43dp"
         android:layout_below="@+id/button_interval"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Stopwatch"
+        android:id="@+id/button_stopwatch"
+        android:layout_below="@+id/button_presence"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="98dp" />
+        android:layout_marginTop="71dp" />
+
 
 </RelativeLayout>

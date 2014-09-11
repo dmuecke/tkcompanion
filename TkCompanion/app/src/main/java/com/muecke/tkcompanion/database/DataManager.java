@@ -8,7 +8,7 @@ import android.util.Log;
 public class DataManager extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "swimmers.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 3;
 
     public static final String TABLE_PE = "persons";
     public static final String COLUMN_NAME = "name";
@@ -69,6 +69,20 @@ public class DataManager extends SQLiteOpenHelper {
             COLUMN_SENDOFF + " integer " +
             " );";
 
+    public static final String TABLE_SP = "split_results";
+    public static final String COLUMN_COMP = "competition";
+    public static final String COLUMN_TOTAL = "total";
+    public static final String COLUMN_SPLIT = "split";
+
+    private static final String CREATE_TABLE_SP = "CREATE TABLE " + TABLE_SP + "( " +
+            COLUMN_NAME + " text not null, " +
+            COLUMN_TE + " text not null, " +
+            COLUMN_COMP + " text not null, " +
+            COLUMN_SPLIT + " text, " +
+            COLUMN_TOTAL + " integer " +
+
+            " );";
+
     public DataManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -78,7 +92,7 @@ public class DataManager extends SQLiteOpenHelper {
         database.execSQL(CREATE_TABLE_PE);
         database.execSQL(CREATE_TABLE_AV);
         database.execSQL(CREATE_TABLE_IR);
-
+        database.execSQL(CREATE_TABLE_SP);
     }
 
     @Override
@@ -89,6 +103,7 @@ public class DataManager extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PE);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PR);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_IR);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SP);
 
         onCreate(db);
     }

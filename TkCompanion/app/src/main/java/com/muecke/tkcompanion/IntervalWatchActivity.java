@@ -77,7 +77,7 @@ public class IntervalWatchActivity extends Activity {
                     sendOffDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int whichButton) {
                             gapTime = Integer.parseInt(sendOffInput.getText().toString());
-                            sendOffView.setText(String.format("Send-Off: %d", gapTime));
+                            sendOffView.setText(String.format("Send-Off: %ds", gapTime));
                         }
                     });
 
@@ -223,7 +223,7 @@ public class IntervalWatchActivity extends Activity {
                             staggeredElapsed += factor*interval;
                         }
                         if (elapsed == staggeredElapsed) {
-                            swimmerList.get(position).setBaseTime(SystemClock.elapsedRealtime());
+                            swimmerList.get(position).pushOff(SystemClock.elapsedRealtime());
                             update=true;
                         }
                     }
@@ -244,8 +244,8 @@ public class IntervalWatchActivity extends Activity {
                 Swimmer swimmer = (Swimmer) parent.getItemAtPosition(position);
 
                 if (timerStatus.equals(WatchStatus.RUNNING)) {
-                    long lapTime = ((SystemClock.elapsedRealtime() - swimmer.getBaseTime()) / 100);
-                    swimmer.setLapTime((int) lapTime);
+
+                    swimmer.setLapTime(SystemClock.elapsedRealtime());
                     if (position + 1 == swimmerList.size()) {
                         position = -1;
                     }

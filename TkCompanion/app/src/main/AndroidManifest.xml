@@ -23,11 +23,6 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.muecke.tkcompanion.MainActivity" />
-
-        </activity>
-        <activity
-            android:name=".IntervalSettingsActivity"
-            android:label="@string/title_activity_interval_settings" >
         </activity>
         <activity
             android:name=".ListResultsActivity"
@@ -45,6 +40,19 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.muecke.tkcompanion.MainActivity" />
         </activity>
+        <activity
+            android:name=".StopWatch"
+            android:label="@string/title_activity_stop_watch"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.muecke.tkcompanion.MainActivity" />
+        </activity>
     </application>
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!-- To access Google+ APIs: -->
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

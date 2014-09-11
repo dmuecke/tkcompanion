@@ -1,6 +1,7 @@
 package com.muecke.tkcompanion;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,9 +28,18 @@ public class LazyAdapter extends ArrayAdapter<Swimmer> {
         TextView round = (TextView)rowView.findViewById(R.id.text_round);
 
         Swimmer swimmer = getItem(position);
-        name.setText(swimmer.name);
-        split_time.setText(""+swimmer.lapTime /10+"."+swimmer.lapTime %10);
-        round.setText("" + swimmer.round);
+        name.setText(swimmer.getName());
+        round.setText("" + swimmer.getRound());
+
+        if (swimmer.getRound() > 1) {
+            int total = swimmer.getTotal();
+            int totmin = total / 600;
+            int totsec = total % 600;
+            split_time.setText(String.format("%02d:%02d", totmin, totsec/10) + "." + totsec%10);
+
+        } else {
+            split_time.setText("00:00.0");
+        }
         return rowView;
     }
 }

@@ -4,86 +4,105 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Swimmer implements Serializable {
-    public String name;
-    public int lapTime;
-    public int round;
+public class Swimmer extends Person implements Serializable {
 
-    public enum SwimStyle {
-        FREE(0),
-        BACKSTROKE(1),
-        BREASTSTROKE(2),
-        BUTTERFLY(3);
-
-        private int value;
-        SwimStyle(int value) {
-            this.value=value;
-        }
-
-        public int getValue(){
-            return value;
-        }
+    public int getTtotal() {
+        return ttotal;
     }
 
-    public enum Distance {
-        SC50M(0),
-        SC100M(1),
-        SC200M(2),
-        SC400(3),
-        LC50M(4),
-        LC100M(5),
-        LC200M(6),
-        LC400M(7);
+    private int ttotal;
 
-        private int value;
-        Distance(int value) {
-            this.value=value;
-        }
-        public int getValue(){
-            return value;
-        }
+    public int getRound() {
+        return round;
     }
 
-    private int[][] targetTimes;
+    private int round;
 
-    public void setBaseTime(long baseTime) {
-        this.baseTime = baseTime;
-        round++;
+    public Swimmer(Person person) {
+        super(person);
+    }
+    public int getThreshold() {
+        return threshold;
     }
 
-    public long getBaseTime() {
-        return baseTime;
+
+    private int targetTime;
+    private int threshold;
+    private Swimming.SwimStyle style;
+    private Swimming.Distance distance;
+    private Swimming.IntervalLength intervalLength;
+
+    public void pushOff(long baseTime) {
+        this.startTime = baseTime;
+        ttotal = 0;
+        round = 1;
     }
 
-    private long baseTime;
-    public List<Integer> splitTime;
+
+    public long getStartTime() {
+        return startTime;
+    }
+
+    private long startTime;
+
+    public List<Integer> getSplitTime() {
+        return splitTime;
+    }
+
+    public List<Integer> splitTime = new ArrayList<Integer>();;
+
 
     public Swimmer(String name) {
-        this.name=name;
+        super();
+        setName(name);
+        reset();
+    }
+
+    public void reset() {
         round = 0;
-        lapTime =0;
-        baseTime =0;
-        splitTime = new ArrayList<Integer>();
-        targetTimes = new int[4][8];
+        startTime =0;
+        splitTime.clear();
+        targetTime = 0;
+        threshold = 0;
+        ttotal = 0;
     }
 
-    public void setLapTime(int time) {
-        lapTime=time;
-        splitTime.add(time);
+    public void setLapTime(long realtime) {
+        int lapTime = (int) (realtime - startTime) / 100;
+        if (lapTime > 100) {
+            ttotal += lapTime;
+            splitTime.add(lapTime);
+            startTime = realtime;
+            round += 1;
+
+        }
     }
 
-    /**
-     * get time in 10th of seconds from array of target times
-     * @param style specifies swimming style (0 to 3)
-     * @param distance specifies distance (0 for 100m, 1 for 200m)
-     * @return target time in 10th of seconds
-     */
-    public int getTargetTime(SwimStyle style, Distance distance) {
-            return targetTimes[style.getValue()][distance.getValue()];
+    public void calculateUSRPTTime(Swimming.SwimStyle style, Swimming.Distance distance, int targetTime, Swimming.IntervalLength intervalLength) {
+        this.targetTime=targetTime;
+        this.style=style;
+        this.distance=distance;
+        this.intervalLength=intervalLength;
+        threshold =targetTime/(distance.getValue()/intervalLength.getValue());
     }
 
-    public void setTargetTime(SwimStyle style, Distance distance, int newTime) {
-        targetTimes[style.getValue()][distance.getValue()] = newTime;
+    public int getLapTime() {
+        if (splitTime.isEmpty()) {
+            return -1;
+        } else {
+            return splitTime.get(splitTime.size() - 1);
+        }
     }
 
+    public int getTotal() {
+        if (splitTime.isEmpty()) {
+            return -1;
+        } else {
+            int total = 0;
+            for (Integer split : splitTime) {
+                total += split;
+            }
+            return total;
+        }
+    }
 }

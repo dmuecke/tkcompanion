@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -37,17 +39,30 @@ public class ListResultsActivity extends Activity {
             threshold.setText("Threshold: n/a");
         }
 
+        Button save = (Button) findViewById(R.id.save_results);
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        TextView totalView = (TextView) findViewById(R.id.view_total);
         TextView average = (TextView) findViewById(R.id.view_average);
         if (swimmer.splitTime.size() > 0) {
-            int avg=0;
+            int total=0;
             for (Integer swimSplit : swimmer.splitTime) {
-                avg+=swimSplit;
+                total+=swimSplit;
             }
-            avg /= swimmer.splitTime.size();
-            average.setText("Average: " + avg/10 + "." + avg%10);
 
+            int avg = total / swimmer.splitTime.size();
+            average.setText("Average: " + avg/10 + "." + avg%10);
+            int totmin = total / 600;
+            int totsec = total % 600;
+            totalView.setText(String.format("Total: %02d:%02d", totmin, totsec/10) + "." + totsec%10);
         } else {
             average.setText("Average: n/a");
+            totalView.setText("Total: n/a");
         }
 
 

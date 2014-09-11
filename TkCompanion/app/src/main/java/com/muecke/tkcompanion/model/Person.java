@@ -1,6 +1,19 @@
 package com.muecke.tkcompanion.model;
 
-public class Person {
+import java.io.Serializable;
+
+public class Person implements Serializable {
+
+    public Person() {
+
+    }
+
+    public Person(Person person) {
+        this.group=person.getGroup();
+        this.name=person.getName();
+        this.present=person.isPresent();
+    }
+
 
     public String getGroup() {
         return group;

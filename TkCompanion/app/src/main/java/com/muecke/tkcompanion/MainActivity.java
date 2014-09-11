@@ -9,13 +9,12 @@ import android.content.Intent;
 import android.database.SQLException;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
 
 import com.muecke.tkcompanion.database.PersonsDataSource;
+import com.muecke.tkcompanion.model.Team;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -40,7 +39,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        findViewById(R.id.button_availability).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.button_presence).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent launchactivity= new Intent(MainActivity.this,PresenceActivity.class);
@@ -48,7 +47,23 @@ public class MainActivity extends Activity {
             }
         });
 
-        final File file = new File("/data/Downloads", "persons_import.csv");
+        findViewById(R.id.button_stopwatch).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent launchactivity= new Intent(MainActivity.this,StopWatch.class);
+                startActivity(launchactivity);
+            }
+        });
+
+        File path;
+        if (Environment.getExternalStorageState() == null) {
+            path = Environment.getDataDirectory();
+        } else {
+           path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        }
+        //Log.d("TAG","path: "+path);
+        //Toast.makeText(getApplicationContext(), path.getAbsolutePath(), Toast.LENGTH_LONG).show();
+        final File file = new File(path, "persons_import.csv");
         if (file.exists()) {
             final AlertDialog.Builder sendOffDialog = new AlertDialog.Builder(this);
 
@@ -104,15 +119,18 @@ public class MainActivity extends Activity {
 
         }
 
-//        PersonsDataSource dataSource = new PersonsDataSource(this);
-//        dataSource.open();
+
+        PersonsDataSource dataSource = new PersonsDataSource(this);
+        dataSource.open();
 //        if (dataSource.getAllPersons().isEmpty()) { // add some demo data
-//            for (String s : getResources().getStringArray(R.array.demo_persons)) {
-//                String[] nameGrup = s.split(",");
-//                dataSource.createPerson(nameGrup[0], nameGrup[1]);
-//            }
+            for (String s : getResources().getStringArray(R.array.demo_persons)) {
+                String[] nameGrup = s.split(",");
+                dataSource.createPerson(nameGrup[0], nameGrup[1]);
+            }
 //        }
-//        dataSource.close();
+        dataSource.close();
+
+        Team.readAllPersonsfromDb(context);
 
     }
 

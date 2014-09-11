@@ -52,7 +52,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Send-off: 5"
+            android:text="Send-off: 5s"
             android:id="@+id/send_off_time"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@+id/button_add_swimmer"
@@ -63,18 +63,67 @@
 
     </RelativeLayout>
 
-    <ListView
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/list_swimmer"
-        android:divider="#8A8A8A"
-        android:cacheColorHint="#00000000"
-        android:dividerHeight="0.9dp"
-        android:listSelector="#ccc"
-        android:layout_marginBottom="50dp"
-        android:background="#fff"
-        android:scrollingCache="true" />
+        android:layout_weight="0.1">
 
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/list_swimmer"
+            android:divider="#8A8A8A"
+            android:cacheColorHint="#00000000"
+            android:dividerHeight="0.9dp"
+            android:listSelector="#ccc"
+            android:layout_marginBottom="50dp"
+            android:background="#fff"
+            android:scrollingCache="true" />
 
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="100m"
+            android:id="@+id/target_distance"
+            android:layout_centerVertical="true"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:visibility="visible"
+            android:layout_marginLeft="10dp"
+            android:layout_alignParentLeft="true" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Freestyle"
+            android:id="@+id/target_style"
+            android:layout_alignParentTop="false"
+            android:layout_toEndOf="@+id/target_distance"
+            android:layout_marginLeft="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Distance:"
+            android:id="@+id/textView5"
+            android:layout_toStartOf="@+id/interval_distance"
+            android:layout_marginRight="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="25m"
+            android:id="@+id/interval_distance"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="10dp" />
+
+    </RelativeLayout>
 </LinearLayout>
