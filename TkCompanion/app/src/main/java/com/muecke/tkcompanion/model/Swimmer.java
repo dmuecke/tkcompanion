@@ -1,10 +1,12 @@
 package com.muecke.tkcompanion.model;
 
+import com.muecke.tkcompanion.Evaluable;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Swimmer implements Serializable {
+public class Swimmer implements Evaluable, Serializable {
     public String name;
     public int lapTime;
     public int round;
@@ -74,8 +76,8 @@ public class Swimmer implements Serializable {
 
     /**
      * get time in 10th of seconds from array of target times
-     * @param style specifies swimming style (0 to 3)
-     * @param distance specifies distance (0 for 100m, 1 for 200m)
+     * @param style specifies swimming style
+     * @param distance specifies distance
      * @return target time in 10th of seconds
      */
     public int getTargetTime(SwimStyle style, Distance distance) {
@@ -86,4 +88,12 @@ public class Swimmer implements Serializable {
         targetTimes[style.getValue()][distance.getValue()] = newTime;
     }
 
+    @Override
+    public int value() {
+        /*
+        Hier muss die jeweils benoetigte Zielzeit ausgegeben werden,
+        nach der die Teams ausgeglichen werden sollen!
+         */
+        return -1; // XXX
+    }
 }
