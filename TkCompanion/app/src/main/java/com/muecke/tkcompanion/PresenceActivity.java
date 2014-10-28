@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.muecke.tkcompanion.adapter.PersonsAdapter;
 import com.muecke.tkcompanion.database.PresenceDataSource;
-import com.muecke.tkcompanion.database.PersonsDataSource;
 import com.muecke.tkcompanion.model.Person;
 import com.muecke.tkcompanion.model.Team;
 
@@ -39,7 +38,7 @@ public class PresenceActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_presence);
 
-        ListView viewPersons = (ListView) findViewById(R.id.listView_persons);
+        ListView viewPersons = (ListView) findViewById(R.id.listView_results);
         final List<Person> allPersons = new ArrayList<Person>();
         allPersons.addAll(Team.allPersons);
         final String[] allGroups = grepGroups(allPersons);

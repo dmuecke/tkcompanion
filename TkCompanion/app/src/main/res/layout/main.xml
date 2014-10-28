@@ -35,5 +35,14 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="71dp" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show Results"
+        android:id="@+id/button_showresults"
+        android:layout_below="@+id/button_stopwatch"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="45dp"/>
+
 
 </RelativeLayout>

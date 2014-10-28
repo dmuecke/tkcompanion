@@ -105,4 +105,10 @@ public class Swimmer extends Person implements Serializable {
             return total;
         }
     }
+
+    public static String formatTime(int swimTime) {
+        int totmin = swimTime / 600;
+        int totsec = swimTime % 600;
+        return String.format("%02d:%02d", totmin, totsec/10) + "." + totsec%10;
+    }
 }

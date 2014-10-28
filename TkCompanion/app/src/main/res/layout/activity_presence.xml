@@ -55,7 +55,7 @@
         <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/listView_persons"
+        android:id="@+id/listView_results"
         android:divider="#8A8A8A"
         android:cacheColorHint="#00000000"
         android:dividerHeight="0.9dp"

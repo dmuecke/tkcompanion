@@ -100,40 +100,6 @@ public class StopWatch extends Activity
             }
         });
 
-//        final TextView sendOffView = (TextView) findViewById(R.id.send_off_time);
-//        sendOffView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                if (!timerStatus.equals(WatchStatus.RUNNING)) {
-//
-//                    final AlertDialog.Builder sendOffDialog = new AlertDialog.Builder(context);
-//
-//                    sendOffDialog.setTitle("Send-Off Time");
-//                    sendOffDialog.setMessage("Define send-off time between swimmers in seconds.");
-//
-//                    // Set an EditText view to get user input
-//                    final EditText sendOffInput = new EditText(context);
-//                    sendOffInput.setText(String.valueOf(gapTime));
-//                    sendOffDialog.setView(sendOffInput);
-//
-//                    sendOffDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int whichButton) {
-//                            gapTime = Integer.parseInt(sendOffInput.getText().toString());
-//                            sendOffView.setText(String.format("Send-Off: %ds", gapTime));
-//                            fragment.setGapTime(gapTime);
-//                        }
-//                    });
-//
-//                    sendOffDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//                        public void onClick(DialogInterface dialog, int whichButton) {
-//                            // Canceled.
-//                        }
-//                    });
-//
-//                    sendOffDialog.show();
-//                }
-//            }
-//        });
 
         final TextView competition = (TextView) findViewById(R.id.swim_competition);
         competition.setOnClickListener(new View.OnClickListener() {

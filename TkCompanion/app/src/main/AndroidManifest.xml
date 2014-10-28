@@ -48,6 +48,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.muecke.tkcompanion.MainActivity" />
         </activity>
+        <activity
+            android:name=".BrowseResults"
+            android:label="@string/title_activity_browse_results"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.muecke.tkcompanion.MainActivity" />
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />

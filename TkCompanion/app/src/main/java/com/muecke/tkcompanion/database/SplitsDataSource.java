@@ -8,6 +8,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.provider.ContactsContract;
 import android.util.Log;
 
+import com.muecke.tkcompanion.model.Person;
+import com.muecke.tkcompanion.model.Swimmer;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +18,7 @@ public class SplitsDataSource {
     // Database fields
     private SQLiteDatabase database;
     private DataManager dbHelper;
-    private String[] allColumns = { DataManager.COLUMN_NAME, DataManager.COLUMN_TE, DataManager.COLUMN_COMP, DataManager.COLUMN_SPLIT, DataManager.COLUMN_TOTAL };
+    private String[] allColumns = { DataManager.COLUMN_NAME, DataManager.COLUMN_TE, DataManager.COLUMN_COMP, DataManager.COLUMN_TOTAL, DataManager.COLUMN_SPLIT };
 
     public SplitsDataSource(Context context) {
         dbHelper = new DataManager(context);
@@ -53,12 +56,37 @@ public class SplitsDataSource {
             } else {
                 stringBuilder.append("/");
             }
-            stringBuilder.append(splitTime);
+            stringBuilder.append(Swimmer.formatTime(splitTime));
         }
         values.put(DataManager.COLUMN_SPLIT, stringBuilder.toString());
 
         database.insert(DataManager.TABLE_SP, null, values);
 
+    }
+
+
+    public List<String> getAllSplits() {
+        List<String> splits = new ArrayList<String>();
+
+        Cursor cursor = database.query(DataManager.TABLE_SP,
+                allColumns, null, null, null, null, null);
+
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            String st = cursorToString(cursor);
+            splits.add(st);
+            cursor.moveToNext();
+        }
+        // make sure to close the cursor
+        cursor.close();
+        return splits;
+    }
+
+    private String cursorToString(Cursor cursor) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(cursor.getString(1)).append(":").append(cursor.getString(0)).append("  ");
+        builder.append(cursor.getString(2)).append("  ").append(Swimmer.formatTime(cursor.getInt(3))).append(" |").append(cursor.getString(4));
+        return builder.toString();
     }
 
 }

@@ -32,11 +32,7 @@ public class LazyAdapter extends ArrayAdapter<Swimmer> {
         round.setText("" + swimmer.getRound());
 
         if (swimmer.getRound() > 1) {
-            int total = swimmer.getTotal();
-            int totmin = total / 600;
-            int totsec = total % 600;
-            split_time.setText(String.format("%02d:%02d", totmin, totsec/10) + "." + totsec%10);
-
+            split_time.setText(Swimmer.formatTime(swimmer.getTotal()));
         } else {
             split_time.setText("00:00.0");
         }

@@ -1,0 +1,54 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              tools:context="com.muecke.tkcompanion.BrowseResults"
+              android:orientation="vertical">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:tools="http://schemas.android.com/tools"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="yyyy-mm-dd"
+            android:id="@+id/session_name"
+            android:textSize="20sp"
+            android:layout_marginLeft="20dp" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="all"
+            android:id="@+id/filter_group"
+            android:textSize="20sp"
+            android:layout_marginLeft="20dp" />
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.1">
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/listView_results"
+            android:divider="#8A8A8A"
+            android:cacheColorHint="#00000000"
+            android:dividerHeight="0.9dp"
+            android:listSelector="#ccc"
+            android:layout_marginBottom="50dp"
+            android:background="#fff"
+            android:scrollingCache="true" />
+    </LinearLayout>
+
+</LinearLayout>

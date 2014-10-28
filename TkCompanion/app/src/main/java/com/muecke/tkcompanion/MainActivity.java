@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.muecke.tkcompanion.database.PersonsDataSource;
+import com.muecke.tkcompanion.model.Person;
 import com.muecke.tkcompanion.model.Team;
 
 import java.io.BufferedReader;
@@ -21,6 +22,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.List;
 
 
 public class MainActivity extends Activity {
@@ -51,6 +53,14 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 Intent launchactivity= new Intent(MainActivity.this,StopWatch.class);
+                startActivity(launchactivity);
+            }
+        });
+
+        findViewById(R.id.button_showresults).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent launchactivity= new Intent(MainActivity.this,BrowseResults.class);
                 startActivity(launchactivity);
             }
         });
@@ -122,9 +132,16 @@ public class MainActivity extends Activity {
 
         PersonsDataSource dataSource = new PersonsDataSource(this);
         dataSource.open();
-//        if (dataSource.getAllPersons().isEmpty()) { // add some demo data
-            for (String s : getResources().getStringArray(R.array.demo_persons)) {
+        List<Person> all = dataSource.getAllPersons();
+            PERSON: for (String s : getResources().getStringArray(R.array.demo_persons)) {
+
                 String[] nameGrup = s.split(",");
+                for (Person person : all) {
+                    if (person.getName().equalsIgnoreCase(nameGrup[0]) && person.getGroup().equalsIgnoreCase(nameGrup[1])) {
+                        continue PERSON;
+                    }
+                }
+
                 dataSource.createPerson(nameGrup[0], nameGrup[1]);
             }
 //        }

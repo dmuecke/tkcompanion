@@ -7,7 +7,8 @@ public class Swimming implements Serializable {
         FREE(0,"Freestyle","F"),
         BACKSTROKE(1,"Backstroke","R"),
         BREASTSTROKE(2,"Breaststroke","B"),
-        BUTTERFLY(3,"Butterfly","S");
+        BUTTERFLY(3,"Butterfly","S"),
+        IM(4,"IM","L");
 
         private final String desc;
         private final String shortDesc;
