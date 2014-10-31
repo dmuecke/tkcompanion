@@ -1,4 +1,4 @@
-package com.muecke.tkcompanion;
+package com.muecke.tkcompanion.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -8,8 +8,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,21 +15,22 @@ import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.muecke.tkcompanion.PresenceDialog;
+import com.muecke.tkcompanion.R;
+import com.muecke.tkcompanion.SettingsActivity;
+import com.muecke.tkcompanion.StopwatchFragment;
 import com.muecke.tkcompanion.model.Competition;
 import com.muecke.tkcompanion.model.Swimmer;
 import com.muecke.tkcompanion.model.Team;
 import com.muecke.tkcompanion.model.WatchStatus;
 
-import java.util.List;
-
 
 public class StopWatch extends Activity
     implements PresenceDialog.InteractionListener,
-        SwimmersFragment.InteractionListener {
+        StopwatchFragment.InteractionListener {
     private static final int RESULT_SETTINGS = 1;
-    private SwimmersFragment fragment;
+    private StopwatchFragment fragment;
     private int stopwatchMode = 1;
 
 
@@ -44,7 +43,7 @@ public class StopWatch extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stop_watch);
         if (savedInstanceState == null) {
-            fragment = SwimmersFragment.newInstance();
+            fragment = StopwatchFragment.newInstance();
             getFragmentManager().beginTransaction()
                     .add(R.id.container, fragment)
                     .commit();

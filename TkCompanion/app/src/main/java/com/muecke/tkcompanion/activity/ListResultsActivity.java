@@ -1,4 +1,4 @@
-package com.muecke.tkcompanion;
+package com.muecke.tkcompanion.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.muecke.tkcompanion.R;
 import com.muecke.tkcompanion.model.Swimmer;
 
 import java.util.Collection;

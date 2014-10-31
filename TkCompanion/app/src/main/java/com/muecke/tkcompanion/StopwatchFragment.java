@@ -15,6 +15,8 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.muecke.tkcompanion.activity.ListResultsActivity;
+import com.muecke.tkcompanion.adapter.StopWatchAdapter;
 import com.muecke.tkcompanion.model.Swimmer;
 import com.muecke.tkcompanion.model.Team;
 import com.muecke.tkcompanion.model.WatchStatus;
@@ -26,17 +28,17 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link com.muecke.tkcompanion.SwimmersFragment.InteractionListener} interface
+ * {@link StopwatchFragment.InteractionListener} interface
  * to handle interaction events.
- * Use the {@link SwimmersFragment#newInstance} factory method to
+ * Use the {@link StopwatchFragment#newInstance} factory method to
  * create an instance of this fragment.
  *
  */
-public class SwimmersFragment extends Fragment {
+public class StopwatchFragment extends Fragment {
 
 
     private InteractionListener listener;
-    private LazyAdapter swimmerAdapter;
+    private StopWatchAdapter swimmerAdapter;
     private WatchStatus timerStatus = WatchStatus.FRESH;
     private ListView viewSwimmers;
 
@@ -50,15 +52,15 @@ public class SwimmersFragment extends Fragment {
      *
      * @return A new instance of fragment SwimmersFragment.
      */
-    public static SwimmersFragment newInstance() {
-        SwimmersFragment fragment = new SwimmersFragment();
+    public static StopwatchFragment newInstance() {
+        StopwatchFragment fragment = new StopwatchFragment();
         Bundle args = new Bundle();
 
         fragment.setArguments(args);
         return fragment;
     }
 
-    public SwimmersFragment() {
+    public StopwatchFragment() {
         // Required empty public constructor
     }
 
@@ -72,7 +74,7 @@ public class SwimmersFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_swimmers, container, false);
 
-        swimmerAdapter = new LazyAdapter(getActivity(), team);
+        swimmerAdapter = new StopWatchAdapter(getActivity(), team);
 
         Button addSwimmer = (Button) view.findViewById(R.id.button_add_swimmer);
         addSwimmer.setOnClickListener(new View.OnClickListener() {

@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -17,15 +17,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".IntervalWatchActivity"
-            android:label="@string/title_activity_stop_watch"
-            android:parentActivityName=".MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.muecke.tkcompanion.MainActivity" />
-        </activity>
-        <activity
-            android:name=".ListResultsActivity"
+            android:name=".activity.ListResultsActivity"
             android:label="@string/title_activity_list_results" >
         </activity>
         <activity
@@ -35,15 +27,15 @@
         <activity
             android:name=".PresenceActivity"
             android:label="@string/title_activity_availability"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.muecke.tkcompanion.MainActivity" />
         </activity>
         <activity
-            android:name=".StopWatch"
+            android:name=".activity.StopWatch"
             android:label="@string/title_activity_stop_watch"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.muecke.tkcompanion.MainActivity" />
@@ -51,10 +43,18 @@
         <activity
             android:name=".BrowseResults"
             android:label="@string/title_activity_browse_results"
-            android:parentActivityName=".MainActivity" >
+            android:parentActivityName=".activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.muecke.tkcompanion.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activity.IntervalTraining"
+            android:label="@string/title_activity_interval_training"
+            android:parentActivityName=".activity.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.muecke.tkcompanion.activity.MainActivity" />
         </activity>
     </application>
 

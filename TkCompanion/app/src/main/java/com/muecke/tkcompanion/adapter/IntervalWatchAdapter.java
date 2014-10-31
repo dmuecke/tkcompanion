@@ -1,20 +1,20 @@
-package com.muecke.tkcompanion;
+package com.muecke.tkcompanion.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.muecke.tkcompanion.R;
 import com.muecke.tkcompanion.model.Swimmer;
 
 import java.util.List;
 
-public class LazyAdapter extends ArrayAdapter<Swimmer> {
+public class IntervalWatchAdapter extends ArrayAdapter<Swimmer> {
 
-    public LazyAdapter(Context context,  List<Swimmer> objects) {
+    public IntervalWatchAdapter(Context context, List<Swimmer> objects) {
         super(context, R.layout.list_row, objects);
     }
 
@@ -31,11 +31,7 @@ public class LazyAdapter extends ArrayAdapter<Swimmer> {
         name.setText(swimmer.getName());
         round.setText("" + swimmer.getRound());
 
-        if (swimmer.getRound() > 1) {
-            split_time.setText(Swimmer.formatTime(swimmer.getTotal()));
-        } else {
-            split_time.setText("00:00.0");
-        }
+        split_time.setText(Swimmer.formatTime(swimmer.getLapTime()));
         return rowView;
     }
 }

@@ -21,7 +21,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.muecke.tkcompanion.activity.ListResultsActivity;
+import com.muecke.tkcompanion.adapter.StopWatchAdapter;
 import com.muecke.tkcompanion.model.Swimmer;
+import com.muecke.tkcompanion.model.WatchStatus;
 
 import java.util.ArrayList;
 
@@ -32,11 +35,6 @@ public class IntervalWatchActivity extends Activity {
     private int gapTime = 5;
     private ArrayList<Swimmer> swimmerList;
 
-    enum WatchStatus {
-        RUNNING,
-        STOPPED,
-        FRESH
-    }
 
     private WatchStatus timerStatus = WatchStatus.FRESH;
     final Context context = this;
@@ -136,7 +134,7 @@ public class IntervalWatchActivity extends Activity {
             }
         });
 
-        final LazyAdapter adapter = new LazyAdapter(this,swimmerList);
+        final StopWatchAdapter adapter = new StopWatchAdapter(this,swimmerList);
 
 
         Button moreSwimmerButon = (Button)findViewById(R.id.button_add_swimmer);

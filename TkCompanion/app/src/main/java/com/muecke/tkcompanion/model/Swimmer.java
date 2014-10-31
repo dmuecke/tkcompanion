@@ -1,10 +1,17 @@
 package com.muecke.tkcompanion.model;
 
+import android.os.CountDownTimer;
+import android.os.SystemClock;
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Swimmer extends Person implements Serializable {
+
+    private int lastLap = 0;
+    private CountDownTimer cdt;
 
     public int getTtotal() {
         return ttotal;
@@ -35,6 +42,7 @@ public class Swimmer extends Person implements Serializable {
     public void pushOff(long baseTime) {
         this.startTime = baseTime;
         ttotal = 0;
+        lastLap = 0;
         round = 1;
     }
 
@@ -65,12 +73,14 @@ public class Swimmer extends Person implements Serializable {
         targetTime = 0;
         threshold = 0;
         ttotal = 0;
+        lastLap = 0;
     }
 
     public void setLapTime(long realtime) {
         int lapTime = (int) (realtime - startTime) / 100;
         if (lapTime > 100) {
             ttotal += lapTime;
+            lastLap = lapTime;
             splitTime.add(lapTime);
             startTime = realtime;
             round += 1;
@@ -78,25 +88,14 @@ public class Swimmer extends Person implements Serializable {
         }
     }
 
-    public void calculateUSRPTTime(Swimming.SwimStyle style, Swimming.Distance distance, int targetTime, Swimming.IntervalLength intervalLength) {
-        this.targetTime=targetTime;
-        this.style=style;
-        this.distance=distance;
-        this.intervalLength=intervalLength;
-        threshold =targetTime/(distance.getValue()/intervalLength.getValue());
-    }
 
     public int getLapTime() {
-        if (splitTime.isEmpty()) {
-            return -1;
-        } else {
-            return splitTime.get(splitTime.size() - 1);
-        }
+        return lastLap;
     }
 
     public int getTotal() {
         if (splitTime.isEmpty()) {
-            return -1;
+            return 0;
         } else {
             int total = 0;
             for (Integer split : splitTime) {
@@ -109,6 +108,49 @@ public class Swimmer extends Person implements Serializable {
     public static String formatTime(int swimTime) {
         int totmin = swimTime / 600;
         int totsec = swimTime % 600;
-        return String.format("%02d:%02d", totmin, totsec/10) + "." + totsec%10;
+        return String.format("%02d:%02d.%d", totmin, totsec/10, totsec%10);
+    }
+
+    /*
+        Push-off interva training
+     */
+    public void pushOff(int interval, long realtime) {
+        ttotal = 0;
+        runCountDown(interval, realtime);
+    }
+
+    private void runCountDown(final int interval, final long realtime) {
+        startTime = realtime;
+
+        round += 1;
+        lastLap = 0;
+        cdt = new CountDownTimer(interval * 1000, 10  * 1000) {
+            @Override
+            public void onTick(long l) {
+
+            }
+
+            @Override
+            public void onFinish() {
+                ttotal += interval * 100;
+                runCountDown(interval, SystemClock.elapsedRealtime());
+            }
+        };
+        cdt.start();
+//        Log.d("timer", "started for " + getName());
+    }
+
+    public void stopInterval() {
+        cdt.cancel();
+        cdt = null;
+    }
+
+    public void setIntervalTime(long realtime) {
+        int lapTime = (int) ((realtime - startTime) / 100);
+        if (lapTime > 100) {
+            splitTime.add(lapTime);
+            startTime = realtime;
+            lastLap = lapTime;
+        }
     }
 }

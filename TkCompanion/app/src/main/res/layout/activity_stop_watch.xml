@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    tools:context="com.muecke.tkcompanion.StopWatch"
+    tools:context="com.muecke.tkcompanion.activity.StopWatch"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -41,7 +41,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.muecke.tkcompanion.StopWatch"
+    tools:context="com.muecke.tkcompanion.activity.StopWatch"
     tools:ignore="MergeRootFrame" />
 
     </LinearLayout>

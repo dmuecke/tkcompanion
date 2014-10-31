@@ -58,4 +58,11 @@ public class Team implements Serializable {
 
         ds.close();
     }
+
+    public static void stopInterval() {
+        for (Swimmer swimmer : team) {
+            swimmer.stopInterval();
+        }
+
+    }
 }

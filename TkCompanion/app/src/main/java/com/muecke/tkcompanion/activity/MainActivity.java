@@ -1,4 +1,4 @@
-package com.muecke.tkcompanion;
+package com.muecke.tkcompanion.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -13,6 +13,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.muecke.tkcompanion.BrowseResults;
+import com.muecke.tkcompanion.IntervalWatchActivity;
+import com.muecke.tkcompanion.PresenceActivity;
+import com.muecke.tkcompanion.R;
+import com.muecke.tkcompanion.SettingsActivity;
 import com.muecke.tkcompanion.database.PersonsDataSource;
 import com.muecke.tkcompanion.model.Person;
 import com.muecke.tkcompanion.model.Team;
@@ -36,7 +41,7 @@ public class MainActivity extends Activity {
         findViewById(R.id.button_interval).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent launchactivity= new Intent(MainActivity.this,IntervalWatchActivity.class);
+                Intent launchactivity= new Intent(MainActivity.this,IntervalTraining.class);
                 startActivity(launchactivity);
             }
         });
