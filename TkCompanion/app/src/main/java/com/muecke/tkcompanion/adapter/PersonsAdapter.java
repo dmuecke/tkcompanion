@@ -13,9 +13,6 @@ import com.muecke.tkcompanion.model.Person;
 
 import java.util.List;
 
-/**
-* Created by mueck on 24/09/2014.
-*/
 public class PersonsAdapter extends ArrayAdapter<Person> {
     public PersonsAdapter(Context context, List<Person> list) {
         super(context, R.layout.list_row_presence,list);
@@ -30,8 +27,7 @@ public class PersonsAdapter extends ArrayAdapter<Person> {
         final CheckedTextView checkedViewSwimmer = (CheckedTextView) rowView.findViewById(R.id.swim_name);
         checkedViewSwimmer.setChecked(swimmer.isPresent());
 
-        TextView name = (TextView) rowView.findViewById(R.id.swim_name);
-        name.setText(swimmer.getName());
+        checkedViewSwimmer.setText(swimmer.getName());
         return rowView;
     }
 }

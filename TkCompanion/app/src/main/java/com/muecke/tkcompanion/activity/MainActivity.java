@@ -13,8 +13,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.muecke.tkcompanion.BrowseResults;
-import com.muecke.tkcompanion.IntervalWatchActivity;
 import com.muecke.tkcompanion.PresenceActivity;
 import com.muecke.tkcompanion.R;
 import com.muecke.tkcompanion.SettingsActivity;

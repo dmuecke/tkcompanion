@@ -65,7 +65,7 @@ public class SplitsDataSource {
     }
 
 
-    public List<String> getAllSplits() {
+    public List<String> getFilteredSplits(String session) {
         List<String> splits = new ArrayList<String>();
 
         Cursor cursor = database.query(DataManager.TABLE_SP,
@@ -73,8 +73,10 @@ public class SplitsDataSource {
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            String st = cursorToString(cursor);
-            splits.add(st);
+            if ("All".equalsIgnoreCase(session) || session.equalsIgnoreCase(cursor.getString(1))) {
+                String st = cursorToString(cursor);
+                splits.add(st);
+            }
             cursor.moveToNext();
         }
         // make sure to close the cursor
@@ -89,4 +91,12 @@ public class SplitsDataSource {
         return builder.toString();
     }
 
+    public void deleteFilteredSplits(String session) {
+        if ("All".equalsIgnoreCase(session)) {
+            database.delete(DataManager.TABLE_SP,null,null);
+        } else {
+            database.delete(DataManager.TABLE_SP, DataManager.COLUMN_TE + "= ?", new String[]{session});
+        }
+
+    }
 }
