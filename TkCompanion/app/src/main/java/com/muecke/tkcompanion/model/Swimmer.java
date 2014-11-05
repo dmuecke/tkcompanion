@@ -141,8 +141,8 @@ public class Swimmer extends Person implements Serializable {
     }
 
     public void stopInterval() {
-        cdt.cancel();
-        cdt = null;
+            cdt.cancel();
+            cdt = null;
     }
 
     public void setIntervalTime(long realtime) {
@@ -152,5 +152,12 @@ public class Swimmer extends Person implements Serializable {
             startTime = realtime;
             lastLap = lapTime;
         }
+    }
+
+    public Result getResult() {
+        Result r = new Result(getName(), 0, "", Competition.getShortDesc(), getTtotal());
+        r.splitTime.addAll(splitTime);
+
+        return r;
     }
 }

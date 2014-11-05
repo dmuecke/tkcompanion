@@ -2,11 +2,14 @@ package com.muecke.tkcompanion;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +18,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.muecke.tkcompanion.activity.ListResultsActivity;
+import com.muecke.tkcompanion.activity.ResultDetails;
 import com.muecke.tkcompanion.adapter.StopWatchAdapter;
 import com.muecke.tkcompanion.model.Swimmer;
 import com.muecke.tkcompanion.model.Team;
@@ -45,7 +48,7 @@ public class StopwatchFragment extends Fragment {
     private long gapTime = 5;
 
 
-    final List<Swimmer> team = new ArrayList<Swimmer>();
+    final List<Swimmer> starters = new ArrayList<Swimmer>();
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -74,19 +77,19 @@ public class StopwatchFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_swimmers, container, false);
 
-        swimmerAdapter = new StopWatchAdapter(getActivity(), team);
+        swimmerAdapter = new StopWatchAdapter(getActivity(), starters);
 
         Button addSwimmer = (Button) view.findViewById(R.id.button_add_swimmer);
         addSwimmer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                team.clear();
-                team.addAll(Team.getTeam());
-                final String[] names = new String[team.size()];
-                final boolean[] checkedItems = new boolean[team.size()];
+                starters.clear();
+                starters.addAll(Team.getTeam());
+                final String[] names = new String[starters.size()];
+                final boolean[] checkedItems = new boolean[starters.size()];
 
-                for (int i = 0; i < team.size(); i++) {
-                    Swimmer swimmer = team.get(i);
+                for (int i = 0; i < starters.size(); i++) {
+                    Swimmer swimmer = starters.get(i);
                     names[i] = swimmer.getName();
                     checkedItems[i]=true;
                 }
@@ -102,9 +105,9 @@ public class StopwatchFragment extends Fragment {
                 builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        for (i = team.size() - 1; i >= 0; i--) {
+                        for (i = starters.size() - 1; i >= 0; i--) {
                             if (!checkedItems[i]) {
-                                team.remove(i);
+                                starters.remove(i);
                             }
                         }
                         SwimmerReset();
@@ -133,7 +136,7 @@ public class StopwatchFragment extends Fragment {
                     case RUNNING: {
                         swimmer.setLapTime(SystemClock.elapsedRealtime());
                         swimmerAdapter.notifyDataSetChanged();
-                        if (position + 1 == team.size()) {
+                        if (position + 1 == starters.size()) {
                             position = 0;
                         } else if (position > 3) {
                             position -= 3;
@@ -145,12 +148,12 @@ public class StopwatchFragment extends Fragment {
                     }
 
                     case FRESH: {
-                        if (position < team.size() - 1) {
-                            team.remove(position);
-                            team.add(swimmer);
+                        if (position < starters.size() - 1) {
+                            starters.remove(position);
+                            starters.add(swimmer);
                         } else {
-                            team.remove(position);
-                            team.add(0 , swimmer);
+                            starters.remove(position);
+                            starters.add(0 , swimmer);
 
                         }
                         swimmerAdapter.notifyDataSetChanged();
@@ -159,8 +162,8 @@ public class StopwatchFragment extends Fragment {
                     }
 
                     case STOPPED: {
-                        Intent launchactivity= new Intent(getActivity(),ListResultsActivity.class);
-                        launchactivity.putExtra("SWIMMER", swimmer);
+                        Intent launchactivity= new Intent(getActivity(),ResultDetails.class);
+                        launchactivity.putExtra("RESULT", swimmer.getResult());
                         startActivity(launchactivity);
 
                     }
@@ -198,7 +201,7 @@ public class StopwatchFragment extends Fragment {
             case 1:
             case 2: {
                 if (elapsed == 0) {
-                    for (Swimmer swimmer : team) {
+                    for (Swimmer swimmer : starters) {
                         swimmer.pushOff(realtime);
                     }
                 }
@@ -207,8 +210,8 @@ public class StopwatchFragment extends Fragment {
             case 3: {
                 int index = (int) (elapsed / gapTime);
                 boolean pushOff = (elapsed % gapTime) == 0;
-                if (index < team.size() && pushOff) {
-                    team.get(index).pushOff(realtime);
+                if (index < starters.size() && pushOff) {
+                    starters.get(index).pushOff(realtime);
 
                 }
             }
@@ -217,18 +220,33 @@ public class StopwatchFragment extends Fragment {
 
     }
 
-    public void SwimmerReset() {
-        for (Swimmer swimmer : team) {
+    private void SwimmerReset() {
+        for (Swimmer swimmer : starters) {
             swimmer.reset();
         }
         swimmerAdapter.notifyDataSetChanged();
     }
 
-    public void timerStatus(WatchStatus timerStatus) {
-        this.timerStatus = timerStatus;
-        if (timerStatus == WatchStatus.RUNNING) {
-            viewSwimmers.setSelection(0);
+    public void timerStatus(WatchStatus timerStatus, Context context) {
+        switch (timerStatus) {
+            case RUNNING: {
+                viewSwimmers.setSelection(0);
+                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+                gapTime =  Integer.parseInt(pref.getString("gap_time", String.valueOf(gapTime)));
+
+                break;
+            }
+            case STOPPED: {
+                Team.saveSplits(context, starters);
+                break;
+            }
+            case FRESH: {
+                SwimmerReset();
+                break;
+            }
         }
+        this.timerStatus = timerStatus;
+
     }
 
 

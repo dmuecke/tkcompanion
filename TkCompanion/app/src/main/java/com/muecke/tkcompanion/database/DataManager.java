@@ -8,7 +8,7 @@ import android.util.Log;
 public class DataManager extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "swimmers.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     public static final String TABLE_PE = "persons";
     public static final String COLUMN_NAME = "name";
@@ -56,6 +56,8 @@ public class DataManager extends SQLiteOpenHelper {
             COLUMN_TE + " text not null " +
             " );";
     public static final String TABLE_IR = "interval_results";
+    public static final String COLUMN_COMP = "competition";
+    public static final String COLUMN_SPLIT = "split";
     public static final String COLUMN_THRESHOLD = "threshold";
     public static final String COLUMN_AVERGAE = "average";
     public static final String COLUMN_TARGET = "target";
@@ -63,16 +65,13 @@ public class DataManager extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_IR = "CREATE TABLE " + TABLE_IR + "( " +
             COLUMN_NAME + " text not null, " +
             COLUMN_TE + " text not null, " +
-            COLUMN_THRESHOLD + " integer, " +
-            COLUMN_AVERGAE + " integer, " +
-            COLUMN_TARGET + " integer, " +
-            COLUMN_SENDOFF + " integer " +
+            COLUMN_COMP + " text not null, " +
+            COLUMN_SPLIT + " text, " +
+            COLUMN_AVERGAE + " integer " +
             " );";
 
     public static final String TABLE_SP = "split_results";
-    public static final String COLUMN_COMP = "competition";
     public static final String COLUMN_TOTAL = "total";
-    public static final String COLUMN_SPLIT = "split";
 
     private static final String CREATE_TABLE_SP = "CREATE TABLE " + TABLE_SP + "( " +
             COLUMN_NAME + " text not null, " +
@@ -80,7 +79,6 @@ public class DataManager extends SQLiteOpenHelper {
             COLUMN_COMP + " text not null, " +
             COLUMN_SPLIT + " text, " +
             COLUMN_TOTAL + " integer " +
-
             " );";
 
     public DataManager(Context context) {
@@ -100,11 +98,17 @@ public class DataManager extends SQLiteOpenHelper {
         Log.w(DataManager.class.getName(),
                 "Upgrading database from version " + oldVersion + " to "
                         + newVersion + ", which will destroy all old data");
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PE);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PR);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_IR);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SP);
+        if (newVersion == 4) {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_IR);
+            db.execSQL(CREATE_TABLE_IR);
 
-        onCreate(db);
+        } else {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_PE);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_PR);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_IR);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_SP);
+
+            onCreate(db);
+        }
     }
 }

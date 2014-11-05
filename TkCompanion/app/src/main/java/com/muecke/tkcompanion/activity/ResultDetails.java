@@ -11,30 +11,30 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.muecke.tkcompanion.R;
+import com.muecke.tkcompanion.model.Result;
 import com.muecke.tkcompanion.model.Swimmer;
 
-import java.util.Collection;
 import java.util.Collections;
 
 
-public class ListResultsActivity extends Activity {
+public class ResultDetails extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_results);
+        setContentView(R.layout.result_details);
 
         Bundle extras = getIntent().getExtras();
-        Swimmer swimmer = null;
+        Result result = null;
         if (extras != null) {
-            swimmer= (Swimmer) extras.get("SWIMMER");
+            result= (Result) extras.get("RESULT");
 
         }
 
         TextView threshold = (TextView) findViewById(R.id.view_threshold);
-        if (swimmer.splitTime.size() > 4) {
-            Collections.sort(swimmer.splitTime);
-            Integer thresholdValue = swimmer.splitTime.get(swimmer.splitTime.size() - 3);
+        if (result.splitTime.size() > 4) {
+            Collections.sort(result.splitTime);
+            Integer thresholdValue = result.splitTime.get(result.splitTime.size() - 3);
             threshold.setText("Threshold: " + thresholdValue/10 +"." + thresholdValue%10);
         } else {
             threshold.setText("Threshold: n/a");
@@ -50,13 +50,13 @@ public class ListResultsActivity extends Activity {
 
         TextView totalView = (TextView) findViewById(R.id.view_total);
         TextView average = (TextView) findViewById(R.id.view_average);
-        if (swimmer.splitTime.size() > 0) {
+        if (result.splitTime.size() > 0) {
             int total=0;
-            for (Integer swimSplit : swimmer.splitTime) {
+            for (Integer swimSplit : result.splitTime) {
                 total+=swimSplit;
             }
 
-            int avg = total / swimmer.splitTime.size();
+            int avg = total / result.splitTime.size();
             average.setText("Average: " + avg/10 + "." + avg%10);
             int totmin = total / 600;
             int totsec = total % 600;
@@ -69,8 +69,8 @@ public class ListResultsActivity extends Activity {
 
         final ListView listView = (ListView) findViewById(R.id.list_results);
         ArrayAdapter<String> results = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1);
-        for (int splitTime : swimmer.splitTime) {
-            results.add("" + splitTime/10 + "." + splitTime%10);
+        for (int splitTime : result.splitTime) {
+            results.add(Swimmer.formatTime(splitTime));
         }
         listView.setAdapter(results);
 

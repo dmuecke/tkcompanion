@@ -50,7 +50,7 @@ public class StopWatch extends Activity
         }
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        stopwatchMode =  Integer.parseInt(pref.getString("stopwatch_mode","1"));
+        stopwatchMode =  Integer.parseInt(pref.getString("stopwatch_mode", String.valueOf(stopwatchMode)));
 
         final Chronometer chronometer = (Chronometer) findViewById(R.id.chronometer);
         chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
@@ -74,7 +74,6 @@ public class StopWatch extends Activity
                         chronometer.stop();
                         startBtn.setText("Reset");
                         timerStatus=WatchStatus.STOPPED;
-                        Team.saveSplits(context);
                         break;
 
                     }
@@ -90,17 +89,18 @@ public class StopWatch extends Activity
                         startBtn.setText("Start");
                         chronometer.setBase(SystemClock.elapsedRealtime());
                         timerStatus = WatchStatus.FRESH;
-                        fragment.SwimmerReset();
                         break;
                     }
                 }
-                fragment.timerStatus(timerStatus);
+                fragment.timerStatus(timerStatus,context);
 
             }
         });
 
 
         final TextView competition = (TextView) findViewById(R.id.swim_competition);
+        competition.setText(Competition.getShortDesc());
+
         competition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

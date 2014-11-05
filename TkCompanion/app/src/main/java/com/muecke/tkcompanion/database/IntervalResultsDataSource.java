@@ -5,23 +5,21 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.provider.ContactsContract;
 import android.util.Log;
 
-import com.muecke.tkcompanion.model.Person;
 import com.muecke.tkcompanion.model.Result;
 import com.muecke.tkcompanion.model.Swimmer;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class SplitsDataSource {
+public class IntervalResultsDataSource {
     // Database fields
     private SQLiteDatabase database;
     private DataManager dbHelper;
-    private String[] allColumns = { DataManager.COLUMN_NAME, DataManager.COLUMN_TE, DataManager.COLUMN_COMP, DataManager.COLUMN_TOTAL, DataManager.COLUMN_SPLIT };
+    private String[] allColumns = { DataManager.COLUMN_NAME, DataManager.COLUMN_TE, DataManager.COLUMN_COMP, DataManager.COLUMN_AVERGAE, DataManager.COLUMN_SPLIT };
 
-    public SplitsDataSource(Context context) {
+    public IntervalResultsDataSource(Context context) {
         dbHelper = new DataManager(context);
     }
 
@@ -33,11 +31,10 @@ public class SplitsDataSource {
         dbHelper.close();
     }
 
-    public void createSplitTime(String name, String sessionId, String competition,
-                                int total, List<Integer> splitTimes) {
+    public void createSplitTime(String name, String sessionId, String competition, List<Integer> splitTimes) {
 
         try {
-            database.delete(DataManager.TABLE_SP, DataManager.COLUMN_NAME + "= ? and " + DataManager.COLUMN_TE + "= ? and " + DataManager.COLUMN_COMP + "= ?",
+            database.delete(DataManager.TABLE_IR, DataManager.COLUMN_NAME + "= ? and " + DataManager.COLUMN_TE + "= ? and " + DataManager.COLUMN_COMP + "= ?",
                     new String[]{name,sessionId,competition});
         } catch (SQLException e) {
             Log.d("createPresence", e.getMessage());
@@ -47,10 +44,10 @@ public class SplitsDataSource {
         values.put(DataManager.COLUMN_NAME, name);
         values.put(DataManager.COLUMN_TE, sessionId);
         values.put(DataManager.COLUMN_COMP, competition);
-        values.put(DataManager.COLUMN_TOTAL, total);
 
         StringBuilder stringBuilder = new StringBuilder();
         boolean first = true;
+        int total = 0;
         for (Integer splitTime : splitTimes) {
             if (first) {
                 first=false;
@@ -58,10 +55,16 @@ public class SplitsDataSource {
                 stringBuilder.append("/");
             }
             stringBuilder.append(splitTime);
+            total += splitTime;
         }
+        int avg = total;
+        if (splitTimes.size() > 0) {
+            avg = avg / splitTimes.size();
+        }
+        values.put(DataManager.COLUMN_AVERGAE, avg);
         values.put(DataManager.COLUMN_SPLIT, stringBuilder.toString());
 
-        database.insert(DataManager.TABLE_SP, null, values);
+        database.insert(DataManager.TABLE_IR, null, values);
 
     }
 
@@ -72,19 +75,18 @@ public class SplitsDataSource {
             return getFilteredSplits(DataManager.COLUMN_NAME + "= ?", new String[]{filterArg});
         }
         return getFilteredSplits(null, null);
-    }
 
+    }
 
     public List<Result> getFilteredSplits(String filter, String[] filterArgs) {
         List<Result> splits = new ArrayList<Result>();
 
-        Cursor cursor = database.query(DataManager.TABLE_SP, allColumns, filter, filterArgs, null, null, null);
+        Cursor cursor = database.query(DataManager.TABLE_IR, allColumns, filter, filterArgs, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
             Result st = cursorToString(cursor);
             splits.add(st);
-
             cursor.moveToNext();
         }
         // make sure to close the cursor
@@ -92,9 +94,8 @@ public class SplitsDataSource {
         return splits;
     }
 
-
     private Result cursorToString(Cursor c) {
-        Result r = new Result(c.getString(0), 0 ,c.getString(1), c.getString(2), c.getInt(3));
+        Result r = new Result(c.getString(0), c.getInt(3),c.getString(1), c.getString(2), 0);
         String[] strings = c.getString(4).split("/");
         for (String s : strings) {
             try {
@@ -104,7 +105,6 @@ public class SplitsDataSource {
                 Log.d("split parse","error: " + s);
             }
         }
-
         return r;
     }
 
@@ -117,6 +117,7 @@ public class SplitsDataSource {
     }
 
     public void deleteFilteredSplits(String filter, String[] filterArgs) {
-            database.delete(DataManager.TABLE_SP, filter, filterArgs);
+        database.delete(DataManager.TABLE_IR, filter, filterArgs);
+
     }
 }

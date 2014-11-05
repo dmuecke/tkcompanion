@@ -17,7 +17,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.ListResultsActivity"
+            android:name=".activity.ResultDetails"
             android:label="@string/title_activity_list_results" >
         </activity>
         <activity

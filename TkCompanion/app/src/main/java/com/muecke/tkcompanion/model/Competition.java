@@ -13,8 +13,8 @@ public class Competition implements Serializable {
     }
 
     public static void parse(String s) {
-        Swimming.SwimStyle newStyle = swimStyle.find(s.substring( s.length() - 1, s.length()));
-        Swimming.Distance newDistance = distance.find(s.substring(0, s.length() - 1));
+        Swimming.SwimStyle newStyle = parseSwimStyle(s);
+        Swimming.Distance newDistance = parseDistance(s);
         if (newStyle != null && newDistance != null) {
             swimStyle=newStyle;
             distance=newDistance;
@@ -23,5 +23,13 @@ public class Competition implements Serializable {
             Log.d("parse", "Parse error: " + newStyle);
 
         }
+    }
+
+    private static Swimming.Distance parseDistance(String s) {
+        return distance.find(s.substring(0, s.length() - 1));
+    }
+
+    private static Swimming.SwimStyle parseSwimStyle(String s) {
+        return swimStyle.find(s.substring( s.length() - 1, s.length()));
     }
 }

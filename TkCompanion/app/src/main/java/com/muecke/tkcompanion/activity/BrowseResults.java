@@ -4,20 +4,23 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.muecke.tkcompanion.R;
+import com.muecke.tkcompanion.adapter.ResultsAdapter;
+import com.muecke.tkcompanion.database.IntervalResultsDataSource;
 import com.muecke.tkcompanion.database.SplitsDataSource;
-import com.muecke.tkcompanion.model.Competition;
+import com.muecke.tkcompanion.model.Result;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +28,11 @@ import java.util.List;
 
 public class BrowseResults extends Activity {
 
-
+    final String[] allFilters = new String[]{"None","by Date","by Person","by Style/Person"};
     private Context context = this;
-    private String session;
-    private List<String> results = new ArrayList<String>();
+    private List<Result> results = new ArrayList<Result>();
+    int selected=0;
+    String selectionArg = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,76 +40,122 @@ public class BrowseResults extends Activity {
         setContentView(R.layout.activity_browse_results);
 
         ListView viewResults = (ListView) findViewById(R.id.listView_results);
-        session = "All";
-        loadFilteredResults(session);
+        selected=0;
+        loadData(allFilters[selected],selectionArg);
 
-        final ArrayAdapter adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, results);
+        final TextView sessionView = (TextView) findViewById(R.id.filter_selector);
+        sessionView.setText("Filter: " + allFilters[selected]);
+
+        final ArrayAdapter adapter = new ResultsAdapter(context, results);
         viewResults.setAdapter(adapter);
-
-        final TextView sessionView = (TextView) findViewById(R.id.filter_session);
-        sessionView.setText("Select Date: " + session);
-        sessionView.setOnClickListener(new View.OnClickListener() {
+        viewResults.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
-            public void onClick(View view) {
-                final AlertDialog.Builder sessionFilterDialog = new AlertDialog.Builder(context);
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int position, long id) {
+               final Result r = (Result) adapter.getItem(position);
 
-                sessionFilterDialog.setTitle("Session");
-                sessionFilterDialog.setMessage("Set Session.");
 
-                // Set an EditText view to get user input
-                final EditText sessionFilter = new EditText(context);
-                sessionFilter.setText(session);
-                sessionFilterDialog.setView(sessionFilter);
+                final AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-                sessionFilterDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        session = sessionFilter.getText().toString();
-                        sessionView.setText("Select Date: " + session);
+                builder.setTitle("Filter");
+                builder.setSingleChoiceItems(allFilters, selected, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        //set to buffKey instead of selected
+                        //(when cancel not save to selected)
+                        selected=which;
+                    }
+                });
+                builder.setCancelable(false);
+                builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        sessionView.setText("Filter: " + allFilters[selected]);
 
-                        loadFilteredResults(session);
+                        switch (selected) {
+                            case 0: { selectionArg=null; loadData(allFilters[selected],selectionArg); break;}
+                            case 1: { selectionArg=r.getSession(); loadData(allFilters[selected],selectionArg); break;}
+                            case 2: { selectionArg=r.getName(); loadData(allFilters[selected],selectionArg); break;}
+                            case 3: {
+                                selectionArg=r.getName();
+                                loadData(allFilters[2],selectionArg);
+                                List<Result> newList = new ArrayList<Result>();
+                                for (Result result : results) {
+                                    if (r.getCompetition().equals(result.getCompetition())) {
+                                        newList.add(result);
+                                    }
+                                }
+                                results.clear();
+                                results.addAll(newList);
+                                break;}
+                        }
+
                         adapter.notifyDataSetChanged();
                     }
                 });
 
-                sessionFilterDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        // Canceled.
-                    }
-                });
 
-                sessionFilterDialog.show();
+                builder.show();
 
+               return true;
             }
         });
 
+        viewResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                final Result r = (Result) adapter.getItem(position);
+                Intent launchactivity= new Intent(context,ResultDetails.class);
+                launchactivity.putExtra("RESULT", r);
+                startActivity(launchactivity);
+
+            }
+        });
         Button deleteBtn = (Button) findViewById(R.id.button_delete);
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                deleteResults(session);
+                deleteResults(allFilters[selected],selectionArg);
+
                 adapter.notifyDataSetChanged();
             }
         });
 
     }
 
-    private void deleteResults(String session) {
+    private void loadData(String filter,String arg) {
+        results.clear();
+        Log.d("loadData", filter + ": " + arg);
+        loadFilteredResults(filter, arg);
+        loadFilteredIntervals(filter, arg);
+    }
+
+    private void deleteResults(String filter, String arg) {
+        results.clear();
+
         SplitsDataSource ds = new SplitsDataSource(context);
         ds.open();
-        results.clear();
-        ds.deleteFilteredSplits(session);
+        ds.deleteFilteredData(filter, arg);
         ds.close();
+        IntervalResultsDataSource ids = new IntervalResultsDataSource(context);
+        ids.open();
+        ids.deleteFilteredData(filter, arg);
+        ids.close();
 
     }
 
-    private void loadFilteredResults(String session) {
+    private void loadFilteredResults(String filter, String arg) {
         SplitsDataSource ds = new SplitsDataSource(context);
         ds.open();
-        results.clear();
-        results.addAll(ds.getFilteredSplits(session));
+        results.addAll(ds.getFilteredData(filter, arg));
         ds.close();
     }
 
+    private void loadFilteredIntervals(String filter, String arg) {
+        IntervalResultsDataSource ds = new IntervalResultsDataSource(context);
+        ds.open();
+        results.addAll(ds.getFilteredData(filter, arg));
+        ds.close();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

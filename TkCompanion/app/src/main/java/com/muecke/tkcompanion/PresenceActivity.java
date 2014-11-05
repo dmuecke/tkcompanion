@@ -103,7 +103,6 @@ public class PresenceActivity extends Activity {
                         for (Person person : allPersons) {
                             person.setPresent(availablePersons.contains(person.getName()));
                         }
-
                         groupFilterView.setText(allGroups[selected]);
                         adapter.notifyDataSetChanged();
                     }
@@ -137,6 +136,7 @@ public class PresenceActivity extends Activity {
                 }
                 ds.close();
                 finish();
+                Team.team.clear();
             }
         });
     }

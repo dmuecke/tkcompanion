@@ -21,7 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.muecke.tkcompanion.activity.ListResultsActivity;
+import com.muecke.tkcompanion.activity.ResultDetails;
 import com.muecke.tkcompanion.adapter.StopWatchAdapter;
 import com.muecke.tkcompanion.model.Swimmer;
 import com.muecke.tkcompanion.model.WatchStatus;
@@ -250,8 +250,8 @@ public class IntervalWatchActivity extends Activity {
                     listView.setSelection(position + 1);
                     adapter.notifyDataSetChanged();
                 } else {
-                    Intent launchactivity= new Intent(IntervalWatchActivity.this,ListResultsActivity.class);
-                    launchactivity.putExtra("SWIMMER", swimmer);
+                    Intent launchactivity= new Intent(IntervalWatchActivity.this,ResultDetails.class);
+                    launchactivity.putExtra("RESULT", swimmer.getResult());
                     startActivity(launchactivity);
                 }
 
