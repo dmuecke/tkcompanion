@@ -16,8 +16,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.muecke.tkcompanion.R;
+import com.muecke.tkcompanion.adapter.ResultsAdapter;
+import com.muecke.tkcompanion.database.IntervalResultsDataSource;
 import com.muecke.tkcompanion.database.SplitsDataSource;
 import com.muecke.tkcompanion.model.Competition;
+import com.muecke.tkcompanion.model.Result;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +31,7 @@ public class BrowseResults extends Activity {
 
     private Context context = this;
     private String session;
-    private List<String> results = new ArrayList<String>();
+    private List<Result> results = new ArrayList<Result>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +40,9 @@ public class BrowseResults extends Activity {
 
         ListView viewResults = (ListView) findViewById(R.id.listView_results);
         session = "All";
-        loadFilteredResults(session);
+        loadData();
 
-        final ArrayAdapter adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, results);
+        final ArrayAdapter adapter = new ResultsAdapter(context, results);
         viewResults.setAdapter(adapter);
 
         final TextView sessionView = (TextView) findViewById(R.id.filter_session);
@@ -61,8 +64,7 @@ public class BrowseResults extends Activity {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         session = sessionFilter.getText().toString();
                         sessionView.setText("Select Date: " + session);
-
-                        loadFilteredResults(session);
+                        loadData();
                         adapter.notifyDataSetChanged();
                     }
                 });
@@ -83,29 +85,46 @@ public class BrowseResults extends Activity {
             @Override
             public void onClick(View view) {
                 deleteResults(session);
+
                 adapter.notifyDataSetChanged();
             }
         });
 
     }
 
+    private void loadData() {
+        results.clear();
+        loadFilteredResults(session);
+        loadFilteredIntervals(session);
+    }
+
     private void deleteResults(String session) {
+        results.clear();
+
         SplitsDataSource ds = new SplitsDataSource(context);
         ds.open();
-        results.clear();
         ds.deleteFilteredSplits(session);
         ds.close();
+        IntervalResultsDataSource ids = new IntervalResultsDataSource(context);
+        ids.open();
+        ids.deleteFilteredSplits(session);
+        ids.close();
 
     }
 
     private void loadFilteredResults(String session) {
         SplitsDataSource ds = new SplitsDataSource(context);
         ds.open();
-        results.clear();
         results.addAll(ds.getFilteredSplits(session));
         ds.close();
     }
 
+    private void loadFilteredIntervals(String session) {
+        IntervalResultsDataSource ds = new IntervalResultsDataSource(context);
+        ds.open();
+        results.addAll(ds.getFilteredSplits(session));
+        ds.close();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

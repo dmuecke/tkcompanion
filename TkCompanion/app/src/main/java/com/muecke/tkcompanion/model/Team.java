@@ -3,6 +3,7 @@ package com.muecke.tkcompanion.model;
 import android.content.Context;
 import android.text.format.DateFormat;
 
+import com.muecke.tkcompanion.database.IntervalResultsDataSource;
 import com.muecke.tkcompanion.database.PersonsDataSource;
 import com.muecke.tkcompanion.database.PresenceDataSource;
 import com.muecke.tkcompanion.database.SplitsDataSource;
@@ -55,6 +56,18 @@ public class Team implements Serializable {
             ds.createSplitTime(swimmer.getName(), session, Competition.getShortDesc(), swimmer.getTotal(), swimmer.splitTime);
         }
 
+
+        ds.close();
+    }
+
+    public static void saveIntervals(Context context) {
+        String session = (DateFormat.format("yyyy-MM-dd", new Date()).toString());
+
+        IntervalResultsDataSource ds = new IntervalResultsDataSource(context);
+        ds.open();
+        for (Swimmer swimmer : team) {
+            ds.createSplitTime(swimmer.getName(), session, Competition.getShortDesc(), swimmer.splitTime);
+        }
 
         ds.close();
     }

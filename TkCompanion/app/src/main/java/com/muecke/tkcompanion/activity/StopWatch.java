@@ -101,6 +101,8 @@ public class StopWatch extends Activity
 
 
         final TextView competition = (TextView) findViewById(R.id.swim_competition);
+        competition.setText(Competition.getShortDesc());
+
         competition.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
