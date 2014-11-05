@@ -1,11 +1,16 @@
 package com.muecke.tkcompanion.model;
 
-public class Result {
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Result implements Serializable {
     private String name;
     private int avg;
     private String session;
     private String competition;
     private int total;
+    public List<Integer> splitTime = new ArrayList<Integer>();
 
     public Result(String name, int avg, String session, String competition, int total) {
         this.name = name;

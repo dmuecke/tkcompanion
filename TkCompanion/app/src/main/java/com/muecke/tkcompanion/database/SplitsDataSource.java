@@ -57,7 +57,7 @@ public class SplitsDataSource {
             } else {
                 stringBuilder.append("/");
             }
-            stringBuilder.append(Swimmer.formatTime(splitTime));
+            stringBuilder.append(splitTime);
         }
         values.put(DataManager.COLUMN_SPLIT, stringBuilder.toString());
 
@@ -87,7 +87,18 @@ public class SplitsDataSource {
 
 
     private Result cursorToString(Cursor c) {
-        return new Result(c.getString(0), 0 ,c.getString(1), c.getString(2), c.getInt(3));
+        Result r = new Result(c.getString(0), 0 ,c.getString(1), c.getString(2), c.getInt(3));
+        String[] strings = c.getString(4).split("/");
+        for (String s : strings) {
+            try {
+                int i = Integer.parseInt(s);
+                r.splitTime.add(i);
+            } catch (NumberFormatException e) {
+                Log.d("split parse","error: " + s);
+            }
+        }
+
+        return r;
     }
 
     public void deleteFilteredSplits(String session) {

@@ -21,7 +21,6 @@ import com.muecke.tkcompanion.R;
 import com.muecke.tkcompanion.SettingsActivity;
 import com.muecke.tkcompanion.model.Competition;
 import com.muecke.tkcompanion.model.Swimmer;
-import com.muecke.tkcompanion.model.Team;
 import com.muecke.tkcompanion.model.WatchStatus;
 
 public class IntervalTraining extends Activity
@@ -114,8 +113,6 @@ public class IntervalTraining extends Activity
                         chronometer.stop();
                         startBtn.setText("Reset");
                         timerStatus = WatchStatus.STOPPED;
-                        Team.stopInterval();
-                        Team.saveIntervals(context);
                         break;
 
                     }
@@ -131,12 +128,11 @@ public class IntervalTraining extends Activity
                         startBtn.setText("Start");
                         chronometer.setBase(SystemClock.elapsedRealtime());
                         timerStatus = WatchStatus.FRESH;
-                        fragment.SwimmerReset();
                         countDown.setText(String.format("%02d", interval));
                         break;
                     }
                 }
-                fragment.timerStatus(timerStatus);
+                fragment.timerStatus(timerStatus, context);
 
             }
         });

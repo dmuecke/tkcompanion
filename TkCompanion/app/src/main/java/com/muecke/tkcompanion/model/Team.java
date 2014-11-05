@@ -47,12 +47,12 @@ public class Team implements Serializable {
         return team;
     }
 
-    public static void saveSplits(Context context) {
+    public static void saveSplits(Context context, List<Swimmer> starter) {
         String session = (DateFormat.format("yyyy-MM-dd", new Date()).toString());
 
         SplitsDataSource ds = new SplitsDataSource(context);
         ds.open();
-        for (Swimmer swimmer : team) {
+        for (Swimmer swimmer : starter) {
             ds.createSplitTime(swimmer.getName(), session, Competition.getShortDesc(), swimmer.getTotal(), swimmer.splitTime);
         }
 
@@ -60,20 +60,20 @@ public class Team implements Serializable {
         ds.close();
     }
 
-    public static void saveIntervals(Context context) {
+    public static void saveIntervals(Context context, List<Swimmer> starter) {
         String session = (DateFormat.format("yyyy-MM-dd", new Date()).toString());
 
         IntervalResultsDataSource ds = new IntervalResultsDataSource(context);
         ds.open();
-        for (Swimmer swimmer : team) {
+        for (Swimmer swimmer : starter) {
             ds.createSplitTime(swimmer.getName(), session, Competition.getShortDesc(), swimmer.splitTime);
         }
 
         ds.close();
     }
 
-    public static void stopInterval() {
-        for (Swimmer swimmer : team) {
+    public static void stopInterval(List<Swimmer> starter) {
+        for (Swimmer swimmer : starter) {
             swimmer.stopInterval();
         }
 

@@ -3,6 +3,7 @@ package com.muecke.tkcompanion.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,7 +17,6 @@ import android.widget.ListView;
 
 import com.muecke.tkcompanion.R;
 import com.muecke.tkcompanion.adapter.IntervalWatchAdapter;
-import com.muecke.tkcompanion.adapter.StopWatchAdapter;
 import com.muecke.tkcompanion.model.Swimmer;
 import com.muecke.tkcompanion.model.Team;
 import com.muecke.tkcompanion.model.WatchStatus;
@@ -160,8 +160,8 @@ public class IntervalTrainingFragment extends Fragment {
                     }
 
                     case STOPPED: {
-                        Intent launchactivity= new Intent(getActivity(),ListResultsActivity.class);
-                        launchactivity.putExtra("SWIMMER", swimmer);
+                        Intent launchactivity= new Intent(getActivity(),ResultDetails.class);
+                        launchactivity.putExtra("RESULT", swimmer.getResult());
                         startActivity(launchactivity);
 
                     }
@@ -206,17 +206,29 @@ public class IntervalTrainingFragment extends Fragment {
 
     }
 
-    public void SwimmerReset() {
+    private void SwimmerReset() {
         for (Swimmer swimmer : team) {
             swimmer.reset();
         }
         swimmerAdapter.notifyDataSetChanged();
     }
 
-    public void timerStatus(WatchStatus timerStatus) {
+    public void timerStatus(WatchStatus timerStatus, Context context) {
         this.timerStatus = timerStatus;
-        if (timerStatus == WatchStatus.RUNNING) {
-            viewSwimmers.setSelection(0);
+        switch (timerStatus) {
+            case RUNNING: {
+                viewSwimmers.setSelection(0);
+                break;
+            }
+            case STOPPED: {
+                Team.stopInterval(team);
+                Team.saveIntervals(context, team);
+                break;
+            }
+            case FRESH: {
+                SwimmerReset();
+                break;
+            }
         }
     }
 
