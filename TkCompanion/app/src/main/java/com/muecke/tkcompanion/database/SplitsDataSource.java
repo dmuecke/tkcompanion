@@ -65,19 +65,26 @@ public class SplitsDataSource {
 
     }
 
+    public List<Result> getFilteredData(String filterName, String filterArg) {
+        if ("by Date".equals(filterName)) {
+            return getFilteredSplits(DataManager.COLUMN_TE + "= ?", new String[]{filterArg});
+        } else if ("by Person".equals(filterName)) {
+            return getFilteredSplits(DataManager.COLUMN_NAME + "= ?", new String[]{filterArg});
+        }
+        return getFilteredSplits(null, null);
+    }
 
-    public List<Result> getFilteredSplits(String session) {
+
+    public List<Result> getFilteredSplits(String filter, String[] filterArgs) {
         List<Result> splits = new ArrayList<Result>();
 
-        Cursor cursor = database.query(DataManager.TABLE_SP,
-                allColumns, null, null, null, null, null);
+        Cursor cursor = database.query(DataManager.TABLE_SP, allColumns, filter, filterArgs, null, null, null);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            if ("All".equalsIgnoreCase(session) || session.equalsIgnoreCase(cursor.getString(1))) {
-                Result st = cursorToString(cursor);
-                splits.add(st);
-            }
+            Result st = cursorToString(cursor);
+            splits.add(st);
+
             cursor.moveToNext();
         }
         // make sure to close the cursor
@@ -101,12 +108,15 @@ public class SplitsDataSource {
         return r;
     }
 
-    public void deleteFilteredSplits(String session) {
-        if ("All".equalsIgnoreCase(session)) {
-            database.delete(DataManager.TABLE_SP,null,null);
+    public void deleteFilteredData(String filterName, String filterArg) {
+        if ("by Date".equals(filterName)) {
+            deleteFilteredSplits(DataManager.COLUMN_TE + "= ?", new String[]{filterArg});
         } else {
-            database.delete(DataManager.TABLE_SP, DataManager.COLUMN_TE + "= ?", new String[]{session});
+            deleteFilteredSplits(null, null);
         }
+    }
 
+    public void deleteFilteredSplits(String filter, String[] filterArgs) {
+            database.delete(DataManager.TABLE_SP, filter, filterArgs);
     }
 }

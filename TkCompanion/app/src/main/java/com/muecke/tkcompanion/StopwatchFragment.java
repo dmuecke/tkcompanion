@@ -5,9 +5,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -226,10 +228,12 @@ public class StopwatchFragment extends Fragment {
     }
 
     public void timerStatus(WatchStatus timerStatus, Context context) {
-        this.timerStatus = timerStatus;
         switch (timerStatus) {
             case RUNNING: {
                 viewSwimmers.setSelection(0);
+                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
+                gapTime =  Integer.parseInt(pref.getString("gap_time", String.valueOf(gapTime)));
+
                 break;
             }
             case STOPPED: {
@@ -241,6 +245,8 @@ public class StopwatchFragment extends Fragment {
                 break;
             }
         }
+        this.timerStatus = timerStatus;
+
     }
 
 

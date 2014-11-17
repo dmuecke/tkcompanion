@@ -50,7 +50,7 @@ public class StopWatch extends Activity
         }
 
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        stopwatchMode =  Integer.parseInt(pref.getString("stopwatch_mode","1"));
+        stopwatchMode =  Integer.parseInt(pref.getString("stopwatch_mode", String.valueOf(stopwatchMode)));
 
         final Chronometer chronometer = (Chronometer) findViewById(R.id.chronometer);
         chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {

@@ -15,7 +15,7 @@ import java.util.List;
 
 public class Team implements Serializable {
     public static List<Person> allPersons = new ArrayList<Person>();
-    private static final List<Swimmer> team      = new ArrayList<Swimmer>();
+    public static final List<Swimmer> team      = new ArrayList<Swimmer>();
 
     public  static void readAllPersonsfromDb(Context context) {
         PersonsDataSource dataSource = new PersonsDataSource(context);
