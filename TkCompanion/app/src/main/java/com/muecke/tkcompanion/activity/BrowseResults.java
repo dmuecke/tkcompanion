@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -95,12 +96,20 @@ public class BrowseResults extends Activity {
 
                 builder.show();
 
-               return false;
+               return true;
             }
         });
 
+        viewResults.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                final Result r = (Result) adapter.getItem(position);
+                Intent launchactivity= new Intent(context,ResultDetails.class);
+                launchactivity.putExtra("RESULT", r);
+                startActivity(launchactivity);
 
-
+            }
+        });
         Button deleteBtn = (Button) findViewById(R.id.button_delete);
         deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
