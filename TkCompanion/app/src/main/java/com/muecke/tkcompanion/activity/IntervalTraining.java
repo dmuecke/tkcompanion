@@ -16,7 +16,6 @@ import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.muecke.tkcompanion.PresenceDialog;
 import com.muecke.tkcompanion.R;
 import com.muecke.tkcompanion.SettingsActivity;
 import com.muecke.tkcompanion.model.Competition;
@@ -24,8 +23,7 @@ import com.muecke.tkcompanion.model.Swimmer;
 import com.muecke.tkcompanion.model.WatchStatus;
 
 public class IntervalTraining extends Activity
-        implements PresenceDialog.InteractionListener,
-        IntervalTrainingFragment.InteractionListener {
+        implements  IntervalTrainingFragment.InteractionListener {
 
     private static final int RESULT_SETTINGS = 1;
     private IntervalTrainingFragment fragment;
@@ -204,8 +202,5 @@ public class IntervalTraining extends Activity
 
     }
 
-    @Override
-    public void onPresenceInteraction(boolean[] checkedSwimmers) {
 
-    }
 }

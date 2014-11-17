@@ -15,7 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.muecke.tkcompanion.R;
 import com.muecke.tkcompanion.adapter.IntervalWatchAdapter;
@@ -127,6 +129,40 @@ public class IntervalTrainingFragment extends Fragment {
         });
 
 
+        final TextView sendOffView = (TextView) view.findViewById(R.id.send_off_time);
+        sendOffView.setText(String.format("Send-Off: %ds", gapTime));
+        sendOffView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!timerStatus.equals(WatchStatus.RUNNING)) {
+
+                    final AlertDialog.Builder sendOffDialog = new AlertDialog.Builder(getActivity());
+
+                    sendOffDialog.setTitle("Send-Off Time");
+                    sendOffDialog.setMessage("Define send-off time between swimmers in seconds.");
+
+                    // Set an EditText view to get user input
+                    final EditText sendOffInput = new EditText(getActivity());
+                    sendOffInput.setText(String.valueOf(gapTime));
+                    sendOffDialog.setView(sendOffInput);
+
+                    sendOffDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            gapTime = Integer.parseInt(sendOffInput.getText().toString());
+                            sendOffView.setText(String.format("Send-Off: %ds", gapTime));
+                        }
+                    });
+
+                    sendOffDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            // Canceled.
+                        }
+                    });
+
+                    sendOffDialog.show();
+                }
+            }
+        });
 
         viewSwimmers = (ListView) view.findViewById(R.id.list_swimmer);
         viewSwimmers.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -218,9 +254,6 @@ public class IntervalTrainingFragment extends Fragment {
         switch (timerStatus) {
             case RUNNING: {
                 viewSwimmers.setSelection(0);
-                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
-                gapTime =  Integer.parseInt(pref.getString("gap_time", String.valueOf(gapTime)));
-                
                 break;
             }
             case STOPPED: {

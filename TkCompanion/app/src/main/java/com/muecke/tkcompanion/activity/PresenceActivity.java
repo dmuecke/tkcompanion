@@ -1,4 +1,4 @@
-package com.muecke.tkcompanion;
+package com.muecke.tkcompanion.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.muecke.tkcompanion.R;
 import com.muecke.tkcompanion.adapter.PersonsAdapter;
 import com.muecke.tkcompanion.database.PresenceDataSource;
 import com.muecke.tkcompanion.model.Person;

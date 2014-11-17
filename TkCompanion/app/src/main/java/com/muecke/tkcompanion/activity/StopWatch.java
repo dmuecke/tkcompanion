@@ -19,16 +19,13 @@ import android.widget.TextView;
 import com.muecke.tkcompanion.PresenceDialog;
 import com.muecke.tkcompanion.R;
 import com.muecke.tkcompanion.SettingsActivity;
-import com.muecke.tkcompanion.StopwatchFragment;
 import com.muecke.tkcompanion.model.Competition;
 import com.muecke.tkcompanion.model.Swimmer;
-import com.muecke.tkcompanion.model.Team;
 import com.muecke.tkcompanion.model.WatchStatus;
 
 
 public class StopWatch extends Activity
-    implements PresenceDialog.InteractionListener,
-        StopwatchFragment.InteractionListener {
+    implements StopwatchFragment.InteractionListener {
     private static final int RESULT_SETTINGS = 1;
     private StopwatchFragment fragment;
     private int stopwatchMode = 1;
@@ -166,8 +163,4 @@ public class StopWatch extends Activity
 
     }
 
-    @Override
-    public void onPresenceInteraction(boolean[] checkedSwimmers) {
-
-    }
 }

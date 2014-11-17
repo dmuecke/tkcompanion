@@ -33,6 +33,7 @@ public class BrowseResults extends Activity {
     private List<Result> results = new ArrayList<Result>();
     int selected=0;
     String selectionArg = null;
+    private TextView sessionView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +44,7 @@ public class BrowseResults extends Activity {
         selected=0;
         loadData(allFilters[selected],selectionArg);
 
-        final TextView sessionView = (TextView) findViewById(R.id.filter_selector);
+        sessionView = (TextView) findViewById(R.id.filter_selector);
         sessionView.setText("Filter: " + allFilters[selected]);
 
         final ArrayAdapter adapter = new ResultsAdapter(context, results);
@@ -140,7 +141,10 @@ public class BrowseResults extends Activity {
         ids.open();
         ids.deleteFilteredData(filter, arg);
         ids.close();
-
+        selected=0;
+        selectionArg=null;
+        loadData(allFilters[selected],selectionArg);
+        sessionView.setText("Filter: " + allFilters[selected]);
     }
 
     private void loadFilteredResults(String filter, String arg) {
