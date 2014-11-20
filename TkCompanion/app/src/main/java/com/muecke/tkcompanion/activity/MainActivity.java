@@ -9,13 +9,20 @@ import android.content.Intent;
 import android.database.SQLException;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.format.DateFormat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import com.muecke.tkcompanion.R;
 import com.muecke.tkcompanion.SettingsActivity;
+import com.muecke.tkcompanion.database.IntervalResultsDataSource;
 import com.muecke.tkcompanion.database.PersonsDataSource;
+import com.muecke.tkcompanion.database.PresenceDataSource;
+import com.muecke.tkcompanion.database.SplitsDataSource;
+import com.muecke.tkcompanion.model.Competition;
 import com.muecke.tkcompanion.model.Person;
 import com.muecke.tkcompanion.model.Team;
 
@@ -24,6 +31,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 
@@ -38,24 +46,36 @@ public class MainActivity extends Activity {
         findViewById(R.id.button_interval).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent launchactivity= new Intent(MainActivity.this,IntervalTraining.class);
-                startActivity(launchactivity);
+                if (Team.getTeam().isEmpty()) {
+                    Toast.makeText(context, "Go to Presence first!", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent launchactivity = new Intent(MainActivity.this, IntervalTraining.class);
+                    startActivity(launchactivity);
+                }
             }
         });
 
         findViewById(R.id.button_presence).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent launchactivity= new Intent(MainActivity.this,PresenceActivity.class);
-                startActivity(launchactivity);
+                if (Team.allPersons.isEmpty()) {
+                    Toast.makeText(context, "Create Swimmer first!", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent launchactivity= new Intent(MainActivity.this,PresenceActivity.class);
+                    startActivity(launchactivity);
+                }
             }
         });
 
         findViewById(R.id.button_stopwatch).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent launchactivity= new Intent(MainActivity.this,StopWatch.class);
-                startActivity(launchactivity);
+                if (Team.getTeam().isEmpty()) {
+                    Toast.makeText(context, "Go to Presence first!", Toast.LENGTH_LONG).show();
+                } else {
+                    Intent launchactivity = new Intent(MainActivity.this, StopWatch.class);
+                    startActivity(launchactivity);
+                }
             }
         });
 
@@ -65,6 +85,48 @@ public class MainActivity extends Activity {
             public void onClick(View view) {
                 Intent launchactivity= new Intent(MainActivity.this,BrowseResults.class);
                 startActivity(launchactivity);
+            }
+        });
+
+        findViewById(R.id.button_add_swimmer).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog.Builder sendOffDialog = new AlertDialog.Builder(context);
+
+                sendOffDialog.setTitle("Swimmer");
+                sendOffDialog.setMessage("Add a name.");
+
+                // Set an EditText view to get user input
+                final EditText sendOffInput = new EditText(context);
+                sendOffInput.setText("Swimmer01");
+                sendOffDialog.setView(sendOffInput);
+
+                sendOffDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        PersonsDataSource ds = new PersonsDataSource(context);
+                        ds.open();
+                        Person p = ds.createPerson(sendOffInput.getText().toString(), "ST");
+                        ds.close();
+                        String session = (DateFormat.format("yyyy-MM-dd", new Date()).toString());
+                        PresenceDataSource pds = new PresenceDataSource(context);
+                        pds.open();
+                        pds.createPresence(p.getName(), session,"Pool");
+                        pds.close();
+                        p.setPresent(true);
+                        Team.allPersons.add(p);
+                        Team.team.clear();
+                    }
+                });
+
+                sendOffDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Canceled.
+                    }
+                });
+
+                sendOffDialog.show();
+
+
             }
         });
 
@@ -132,6 +194,14 @@ public class MainActivity extends Activity {
 
         }
 
+        IntervalResultsDataSource ds = new IntervalResultsDataSource(context);
+        ds.open();
+        ds.tidyUp();
+        ds.close();
+        SplitsDataSource sds = new SplitsDataSource(context);
+        sds.open();
+        sds.tidyUp();
+        sds.close();
 
         Team.readAllPersonsfromDb(context);
 

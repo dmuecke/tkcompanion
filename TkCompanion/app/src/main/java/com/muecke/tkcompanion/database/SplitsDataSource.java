@@ -119,4 +119,8 @@ public class SplitsDataSource {
     public void deleteFilteredSplits(String filter, String[] filterArgs) {
             database.delete(DataManager.TABLE_SP, filter, filterArgs);
     }
+
+    public void tidyUp() {
+        deleteFilteredSplits( DataManager.COLUMN_TOTAL + "= ? " , new String[]{"0"});
+    }
 }
