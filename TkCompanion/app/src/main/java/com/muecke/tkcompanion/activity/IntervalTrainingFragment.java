@@ -128,8 +128,13 @@ public class IntervalTrainingFragment extends Fragment {
             }
         });
 
+        final String[] watchModes = new String[]{"Race","Relay","Staggered"};
+        final TextView watchModeView = (TextView) view.findViewById(R.id.watch_mode);
+        watchModeView.setText("Mode:" + watchModes[2]);
+
 
         final TextView sendOffView = (TextView) view.findViewById(R.id.send_off_time);
+        sendOffView.setVisibility(View.VISIBLE);
         sendOffView.setText(String.format("Send-Off: %ds", gapTime));
         sendOffView.setOnClickListener(new View.OnClickListener() {
             @Override

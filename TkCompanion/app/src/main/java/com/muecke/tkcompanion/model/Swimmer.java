@@ -141,8 +141,10 @@ public class Swimmer extends Person implements Serializable {
     }
 
     public void stopInterval() {
+        if (cdt != null) {
             cdt.cancel();
             cdt = null;
+        }
     }
 
     public void setIntervalTime(long realtime) {

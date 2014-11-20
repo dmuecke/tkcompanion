@@ -7,6 +7,8 @@ import java.io.Serializable;
 public class Competition implements Serializable {
     private static Swimming.Distance distance = Swimming.Distance.SC100M;
     private static Swimming.SwimStyle swimStyle = Swimming.SwimStyle.FREE;
+    public static String[] allCompetitions = new String[] {"50F", "50B", "50R", "50S", "100F", "100B", "100R", "100S", "100L",
+            "200F", "200B", "200R", "200S", "200L", "400F", "400L", "800F", "1500F"};
 
     public static String getShortDesc() {
         return String.format("%d%s",distance.getValue(),swimStyle.getSortDesc());
@@ -25,11 +27,11 @@ public class Competition implements Serializable {
         }
     }
 
-    private static Swimming.Distance parseDistance(String s) {
+    public static Swimming.Distance parseDistance(String s) {
         return distance.find(s.substring(0, s.length() - 1));
     }
 
-    private static Swimming.SwimStyle parseSwimStyle(String s) {
+    public static Swimming.SwimStyle parseSwimStyle(String s) {
         return swimStyle.find(s.substring( s.length() - 1, s.length()));
     }
 }

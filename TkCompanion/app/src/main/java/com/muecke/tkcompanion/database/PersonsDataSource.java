@@ -63,7 +63,7 @@ public class PersonsDataSource {
         List<Person> persons = new ArrayList<Person>();
 
         Cursor cursor = database.query(DataManager.TABLE_PE,
-                allColumns, null, null, null, null, null);
+                allColumns, null, null, null, null, DataManager.COLUMN_NAME);
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {

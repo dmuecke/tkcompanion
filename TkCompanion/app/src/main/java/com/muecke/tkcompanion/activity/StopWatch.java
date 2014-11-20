@@ -28,7 +28,6 @@ public class StopWatch extends Activity
     implements StopwatchFragment.InteractionListener {
     private static final int RESULT_SETTINGS = 1;
     private StopwatchFragment fragment;
-    private int stopwatchMode = 1;
 
 
     private WatchStatus timerStatus = WatchStatus.FRESH;
@@ -46,8 +45,6 @@ public class StopWatch extends Activity
                     .commit();
         }
 
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        stopwatchMode =  Integer.parseInt(pref.getString("stopwatch_mode", String.valueOf(stopwatchMode)));
 
         final Chronometer chronometer = (Chronometer) findViewById(R.id.chronometer);
         chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
@@ -57,7 +54,7 @@ public class StopWatch extends Activity
                 if (!timerStatus.equals(WatchStatus.RUNNING)) {
                     return;
                 }
-                fragment.ChronometerTick(stopwatchMode,chrono.getBase());
+                fragment.ChronometerTick(chrono.getBase());
             }
         });
 

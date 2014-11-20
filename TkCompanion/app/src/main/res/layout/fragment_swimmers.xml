@@ -22,6 +22,17 @@
                 android:layout_height="wrap_content"
                 android:text="+" />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mode: Race"
+                android:id="@+id/watch_mode"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/button_add_swimmer"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:visibility="visible"
+                android:layout_marginLeft="10dp"
+                />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -29,10 +40,10 @@
                 android:text="Send-off: 5s"
                 android:id="@+id/send_off_time"
                 android:layout_centerVertical="true"
-                android:layout_toEndOf="@+id/button_add_swimmer"
                 android:textAppearance="?android:attr/textAppearanceLarge"
-                android:visibility="visible"
-                android:layout_marginLeft="10dp" />
+                android:visibility="invisible"
+                android:layout_marginLeft="20dp" />
+
 
         </LinearLayout>
 

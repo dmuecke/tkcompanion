@@ -17,6 +17,11 @@ public class Result implements Serializable {
         this.avg = avg;
         this.session = session;
         this.competition = competition;
+        if (total == 0) { // predict total
+            int dist = Competition.parseDistance(competition).getValue();
+            int mult = dist / 25; // assume 25m pool
+            total = avg * mult;
+        }
         this.total = total;
     }
 

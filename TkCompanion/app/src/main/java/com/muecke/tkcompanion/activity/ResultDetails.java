@@ -19,6 +19,8 @@ import java.util.Collections;
 
 public class ResultDetails extends Activity {
 
+    private Integer thresholdValue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,22 +33,29 @@ public class ResultDetails extends Activity {
 
         }
 
+        TextView competition = (TextView) findViewById(R.id.view_competition);
+        competition.setText(result.getCompetition());
         TextView threshold = (TextView) findViewById(R.id.view_threshold);
         if (result.splitTime.size() > 4) {
             Collections.sort(result.splitTime);
-            Integer thresholdValue = result.splitTime.get(result.splitTime.size() - 3);
+            thresholdValue = result.splitTime.get(result.splitTime.size() - 3);
             threshold.setText("Threshold: " + thresholdValue/10 +"." + thresholdValue%10);
         } else {
+            thresholdValue = 0;
             threshold.setText("Threshold: n/a");
         }
 
-        Button save = (Button) findViewById(R.id.save_results);
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        Button save = (Button) findViewById(R.id.set_threshold);
+        if (thresholdValue == 0) {
+            save.setVisibility(View.INVISIBLE);
+        } else {
+            save.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 
-            }
-        });
+                }
+            });
+        }
 
         TextView totalView = (TextView) findViewById(R.id.view_total);
         TextView average = (TextView) findViewById(R.id.view_average);

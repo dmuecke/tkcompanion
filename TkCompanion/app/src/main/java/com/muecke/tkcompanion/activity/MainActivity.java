@@ -59,6 +59,7 @@ public class MainActivity extends Activity {
             }
         });
 
+
         findViewById(R.id.button_showresults).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,23 +132,6 @@ public class MainActivity extends Activity {
 
         }
 
-
-        PersonsDataSource dataSource = new PersonsDataSource(this);
-        dataSource.open();
-        List<Person> all = dataSource.getAllPersons();
-            PERSON: for (String s : getResources().getStringArray(R.array.demo_persons)) {
-
-                String[] nameGrup = s.split(",");
-                for (Person person : all) {
-                    if (person.getName().equalsIgnoreCase(nameGrup[0]) && person.getGroup().equalsIgnoreCase(nameGrup[1])) {
-                        continue PERSON;
-                    }
-                }
-
-                dataSource.createPerson(nameGrup[0], nameGrup[1]);
-            }
-//        }
-        dataSource.close();
 
         Team.readAllPersonsfromDb(context);
 

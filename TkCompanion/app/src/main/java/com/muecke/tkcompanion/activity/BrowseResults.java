@@ -47,7 +47,7 @@ public class BrowseResults extends Activity {
         sessionView = (TextView) findViewById(R.id.filter_selector);
         sessionView.setText("Filter: " + allFilters[selected]);
 
-        final ArrayAdapter adapter = new ResultsAdapter(context, results);
+        final ArrayAdapter adapter =  new ResultsAdapter(context, results);
         viewResults.setAdapter(adapter);
         viewResults.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -107,6 +107,7 @@ public class BrowseResults extends Activity {
                 final Result r = (Result) adapter.getItem(position);
                 Intent launchactivity= new Intent(context,ResultDetails.class);
                 launchactivity.putExtra("RESULT", r);
+
                 startActivity(launchactivity);
 
             }
@@ -126,23 +127,24 @@ public class BrowseResults extends Activity {
     private void loadData(String filter,String arg) {
         results.clear();
         Log.d("loadData", filter + ": " + arg);
-        loadFilteredResults(filter, arg);
         loadFilteredIntervals(filter, arg);
+        loadFilteredResults(filter, arg);
     }
 
     private void deleteResults(String filter, String arg) {
         results.clear();
 
-        SplitsDataSource ds = new SplitsDataSource(context);
-        ds.open();
-        ds.deleteFilteredData(filter, arg);
-        ds.close();
         IntervalResultsDataSource ids = new IntervalResultsDataSource(context);
         ids.open();
         ids.deleteFilteredData(filter, arg);
         ids.close();
+        SplitsDataSource ds = new SplitsDataSource(context);
+        ds.open();
+        ds.deleteFilteredData(filter, arg);
+        ds.close();
         selected=0;
         selectionArg=null;
+
         loadData(allFilters[selected],selectionArg);
         sessionView.setText("Filter: " + allFilters[selected]);
     }
