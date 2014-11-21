@@ -3,7 +3,6 @@ package com.muecke.tkcompanion.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.Menu;
@@ -15,7 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.muecke.tkcompanion.R;
-import com.muecke.tkcompanion.SettingsActivity;
+import com.muecke.tkcompanion.fragment.StopwatchFragment;
 import com.muecke.tkcompanion.model.Competition;
 import com.muecke.tkcompanion.model.Swimmer;
 import com.muecke.tkcompanion.model.WatchStatus;
@@ -143,8 +142,6 @@ public class StopWatch extends Activity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         if (id == R.id.action_settings) {
-            Intent i = new Intent( this, SettingsActivity.class);
-            startActivityForResult(i, RESULT_SETTINGS);
 
             return true;
         }

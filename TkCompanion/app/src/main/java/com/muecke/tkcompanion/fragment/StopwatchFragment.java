@@ -1,15 +1,14 @@
-package com.muecke.tkcompanion.activity;
+package com.muecke.tkcompanion.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.app.Fragment;
 import android.os.SystemClock;
-import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.muecke.tkcompanion.R;
-import com.muecke.tkcompanion.adapter.IntervalWatchAdapter;
+import com.muecke.tkcompanion.activity.ResultDetails;
+import com.muecke.tkcompanion.adapter.StopWatchAdapter;
 import com.muecke.tkcompanion.model.Swimmer;
 import com.muecke.tkcompanion.model.Team;
 import com.muecke.tkcompanion.model.WatchStatus;
@@ -30,43 +30,43 @@ import java.util.List;
 
 
 /**
- * A simple {@link android.app.Fragment} subclass.
+ * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link com.muecke.tkcompanion.activity.IntervalTrainingFragment.InteractionListener} interface
+ * {@link StopwatchFragment.InteractionListener} interface
  * to handle interaction events.
- * Use the {@link com.muecke.tkcompanion.activity.IntervalTrainingFragment#newInstance} factory method to
+ * Use the {@link StopwatchFragment#newInstance} factory method to
  * create an instance of this fragment.
  *
  */
-public class IntervalTrainingFragment extends Fragment {
+public class StopwatchFragment extends Fragment {
 
 
     private InteractionListener listener;
-    private IntervalWatchAdapter swimmerAdapter;
+    private StopWatchAdapter swimmerAdapter;
     private WatchStatus timerStatus = WatchStatus.FRESH;
     private ListView viewSwimmers;
 
     private long gapTime = 5;
-    private int interval = 40;
-
 
 
     final List<Swimmer> starters = new ArrayList<Swimmer>();
+    private int stopWatchMode = 0;
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @return A new instance of fragment SwimmersFragment.
      */
-    public static IntervalTrainingFragment newInstance() {
-        IntervalTrainingFragment fragment = new IntervalTrainingFragment();
+    public static StopwatchFragment newInstance() {
+        StopwatchFragment fragment = new StopwatchFragment();
         Bundle args = new Bundle();
 
         fragment.setArguments(args);
         return fragment;
     }
 
-    public IntervalTrainingFragment() {
+    public StopwatchFragment() {
         // Required empty public constructor
     }
 
@@ -80,7 +80,7 @@ public class IntervalTrainingFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_swimmers, container, false);
 
-        swimmerAdapter = new IntervalWatchAdapter(getActivity(), starters);
+        swimmerAdapter = new StopWatchAdapter(getActivity(), starters);
 
         Button addSwimmer = (Button) view.findViewById(R.id.button_add_swimmer);
         addSwimmer.setOnClickListener(new View.OnClickListener() {
@@ -94,7 +94,9 @@ public class IntervalTrainingFragment extends Fragment {
                 for (int i = 0; i < starters.size(); i++) {
                     Swimmer swimmer = starters.get(i);
                     names[i] = swimmer.getName();
-                    checkedItems[i]=true;
+                    if (stopWatchMode == 2) {
+                        checkedItems[i]=true;
+                    }
                 }
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -113,7 +115,7 @@ public class IntervalTrainingFragment extends Fragment {
                                 starters.remove(i);
                             }
                         }
-                        resetSwimmers();
+                        SwimmerReset();
                     }
                 });
 
@@ -128,44 +130,86 @@ public class IntervalTrainingFragment extends Fragment {
             }
         });
 
-        final String[] watchModes = new String[]{"Race","Relay","Staggered"};
-        final TextView watchModeView = (TextView) view.findViewById(R.id.watch_mode);
-        watchModeView.setText("Mode:" + watchModes[2]);
-
 
         final TextView sendOffView = (TextView) view.findViewById(R.id.send_off_time);
-        sendOffView.setVisibility(View.VISIBLE);
-        sendOffView.setText(String.format("Send-Off: %ds", gapTime));
-        sendOffView.setOnClickListener(new View.OnClickListener() {
+        if (stopWatchMode == 2) {
+            sendOffView.setVisibility(View.VISIBLE);
+            sendOffView.setText(String.format("Send-Off: %ds", gapTime));
+
+            sendOffView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!timerStatus.equals(WatchStatus.RUNNING)) {
+
+                        final AlertDialog.Builder sendOffDialog = new AlertDialog.Builder(getActivity());
+
+                        sendOffDialog.setTitle("Send-Off Time");
+                        sendOffDialog.setMessage("Define send-off time between swimmers in seconds.");
+
+                        // Set an EditText view to get user input
+                        final EditText sendOffInput = new EditText(getActivity());
+                        sendOffInput.setText(String.valueOf(gapTime));
+                        sendOffDialog.setView(sendOffInput);
+
+                        sendOffDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                gapTime = Integer.parseInt(sendOffInput.getText().toString());
+                                sendOffView.setText(String.format("Send-Off: %ds", gapTime));
+                            }
+                        });
+
+                        sendOffDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                // Canceled.
+                            }
+                        });
+
+                        sendOffDialog.show();
+                    }
+                }
+            });
+
+
+        } else {
+            sendOffView.setVisibility(View.INVISIBLE);
+        }
+
+        final String[] watchModes = new String[]{"Race","Relay","Staggered"};
+        final TextView watchModeView = (TextView) view.findViewById(R.id.watch_mode);
+        watchModeView.setText("Mode:" + watchModes[stopWatchMode]);
+        watchModeView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!timerStatus.equals(WatchStatus.RUNNING)) {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-                    final AlertDialog.Builder sendOffDialog = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("Mode");
+                    builder.setSingleChoiceItems(watchModes, stopWatchMode, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //set to buffKey instead of selected
+                            //(when cancel not save to selected)
+                            stopWatchMode = which;
+                        }
+                    });
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            watchModeView.setText("Mode: " + watchModes[stopWatchMode]);
+                            if (stopWatchMode == 2) {
+                                sendOffView.setVisibility(View.VISIBLE);
+                            } else {
+                                sendOffView.setVisibility(View.INVISIBLE);
+                            }
 
-                    sendOffDialog.setTitle("Send-Off Time");
-                    sendOffDialog.setMessage("Define send-off time between swimmers in seconds.");
-
-                    // Set an EditText view to get user input
-                    final EditText sendOffInput = new EditText(getActivity());
-                    sendOffInput.setText(String.valueOf(gapTime));
-                    sendOffDialog.setView(sendOffInput);
-
-                    sendOffDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            gapTime = Integer.parseInt(sendOffInput.getText().toString());
-                            sendOffView.setText(String.format("Send-Off: %ds", gapTime));
                         }
                     });
 
-                    sendOffDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            // Canceled.
-                        }
-                    });
 
-                    sendOffDialog.show();
+                    builder.show();
                 }
+
             }
         });
 
@@ -176,13 +220,14 @@ public class IntervalTrainingFragment extends Fragment {
                 Swimmer swimmer = (Swimmer) parent.getItemAtPosition(position);
                 switch (timerStatus) {
                     case RUNNING: {
-                        swimmer.setIntervalTime(SystemClock.elapsedRealtime());
+                        swimmer.setLapTime(SystemClock.elapsedRealtime());
                         swimmerAdapter.notifyDataSetChanged();
                         if (position + 1 == starters.size()) {
                             position = 0;
                         } else if (position > 3) {
                             position -= 3;
                         }
+                        Log.d("selection position", "" + position);
                         viewSwimmers.setSelection(position);
 
                         break;
@@ -213,7 +258,7 @@ public class IntervalTrainingFragment extends Fragment {
             }
         });
         viewSwimmers.setAdapter(swimmerAdapter);
-
+        SwimmerReset();
         return view;
     }
 
@@ -237,17 +282,31 @@ public class IntervalTrainingFragment extends Fragment {
     public void ChronometerTick(long base) {
         long realtime = SystemClock.elapsedRealtime();
         final long elapsed = (realtime - base) / 1000;
-        int index = (int) (elapsed / gapTime);
-        boolean pushOff = (elapsed % gapTime) == 0;
-        if (index < starters.size() && pushOff) {
-            starters.get(index).pushOff(interval,realtime);
-        }
 
+        switch (stopWatchMode) {
+            case 1:
+            case 0: {
+                if (elapsed == 0) {
+                    for (Swimmer swimmer : starters) {
+                        swimmer.pushOff(realtime);
+                    }
+                }
+                break;
+            }
+            case 2: {
+                int index = (int) (elapsed / gapTime);
+                boolean pushOff = (elapsed % gapTime) == 0;
+                if (index < starters.size() && pushOff) {
+                    starters.get(index).pushOff(realtime);
+
+                }
+            }
+        }
         swimmerAdapter.notifyDataSetChanged();
 
     }
 
-    private void resetSwimmers() {
+    private void SwimmerReset() {
         for (Swimmer swimmer : starters) {
             swimmer.reset();
         }
@@ -255,26 +314,23 @@ public class IntervalTrainingFragment extends Fragment {
     }
 
     public void timerStatus(WatchStatus timerStatus, Context context) {
-        this.timerStatus = timerStatus;
         switch (timerStatus) {
             case RUNNING: {
                 viewSwimmers.setSelection(0);
+
                 break;
             }
             case STOPPED: {
-                Team.stopInterval(starters);
-                Team.saveIntervals(context, starters);
+                Team.saveSplits(context, starters);
                 break;
             }
             case FRESH: {
-                resetSwimmers();
+                SwimmerReset();
                 break;
             }
         }
-    }
+        this.timerStatus = timerStatus;
 
-    public void setInterval(int interval) {
-        this.interval = interval;
     }
 
 

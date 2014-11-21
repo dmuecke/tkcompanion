@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="TkCompanion Settings">
+        <CheckBoxPreference
+            android:key="pref_auto_presence"
+            android:title="Auto Presence"
+            android:summary="Marks all Swimmers attendant without asking."
+            android:defaultValue="true"/>
+    </PreferenceCategory>
+
+</PreferenceScreen>

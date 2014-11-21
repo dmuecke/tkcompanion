@@ -6,10 +6,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.SQLException;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,12 +20,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.muecke.tkcompanion.R;
-import com.muecke.tkcompanion.SettingsActivity;
 import com.muecke.tkcompanion.database.IntervalResultsDataSource;
 import com.muecke.tkcompanion.database.PersonsDataSource;
 import com.muecke.tkcompanion.database.PresenceDataSource;
 import com.muecke.tkcompanion.database.SplitsDataSource;
-import com.muecke.tkcompanion.model.Competition;
 import com.muecke.tkcompanion.model.Person;
 import com.muecke.tkcompanion.model.Team;
 
@@ -32,22 +33,26 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Date;
-import java.util.List;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener{
     private static final int RESULT_SETTINGS = 1;
     private Context context = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        prefs.registerOnSharedPreferenceChangeListener(this);
+        final boolean auto_presence =prefs.getBoolean("pref_auto_presence", true);
+        Log.d("pref auto presence", "" + auto_presence);
         setContentView(R.layout.main);
         findViewById(R.id.button_interval).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (Team.getTeam().isEmpty()) {
-                    Toast.makeText(context, "Go to Presence first!", Toast.LENGTH_LONG).show();
+                    String text = auto_presence ? "Create Swimmer first!": "Go to Presence first!";
+                    Toast.makeText(context, text, Toast.LENGTH_LONG).show();
                 } else {
                     Intent launchactivity = new Intent(MainActivity.this, IntervalTraining.class);
                     startActivity(launchactivity);
@@ -59,7 +64,8 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if (Team.allPersons.isEmpty()) {
-                    Toast.makeText(context, "Create Swimmer first!", Toast.LENGTH_LONG).show();
+                    String text = "Create Swimmer first!";
+                    Toast.makeText(context, text, Toast.LENGTH_LONG).show();
                 } else {
                     Intent launchactivity= new Intent(MainActivity.this,PresenceActivity.class);
                     startActivity(launchactivity);
@@ -67,11 +73,17 @@ public class MainActivity extends Activity {
             }
         });
 
+        View view = findViewById(R.id.presence_layout);
+        if (auto_presence) {
+            view.setVisibility(View.GONE);
+        }
         findViewById(R.id.button_stopwatch).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (Team.getTeam().isEmpty()) {
-                    Toast.makeText(context, "Go to Presence first!", Toast.LENGTH_LONG).show();
+                    String text = auto_presence ? "Create Swimmer first!": "Go to Presence first!";
+
+                    Toast.makeText(context, text, Toast.LENGTH_LONG).show();
                 } else {
                     Intent launchactivity = new Intent(MainActivity.this, StopWatch.class);
                     startActivity(launchactivity);
@@ -204,8 +216,27 @@ public class MainActivity extends Activity {
         sds.close();
 
         Team.readAllPersonsfromDb(context);
+        if (auto_presence) {
+            String session = (DateFormat.format("yyyy-MM-dd", new Date()).toString());
+            PresenceDataSource pds = new PresenceDataSource(context);
+            pds.open();
+
+            for (Person person : Team.allPersons) {
+                pds.createPresence(person.getName(), session, "Pool");
+                person.setPresent(true);
+            }
+            pds.close();
+
+        }
+
 
     }
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Log.d("onSharedPreferenceChanged", key +": "+sharedPreferences.getBoolean(key,true));
+
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -221,8 +252,8 @@ public class MainActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.action_settings: {
-                Intent i = new Intent( this, SettingsActivity.class);
-                startActivityForResult(i, RESULT_SETTINGS);
+                Intent i = new Intent(this, SettingsActivity.class);
+                startActivity(i);
                 break;
             }
         }

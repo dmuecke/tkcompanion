@@ -9,39 +9,12 @@
     <string name="title_activity_list_results">Results</string>
     <string name="title_activity_availability">Presence</string>
 
-    <string-array name="demo_persons">
-        <item>Kathrin,JST</item>
-        <item>Lotta,JST</item>
-        <item>Lotte,JST</item>
-        <item>Maylin,JST</item>
-        <item>Diana,JST</item>
-        <item>Selina,JST</item>
-        <item>Mats,JST</item>
-        <item>Simon,JST</item>
-        <item>Jasmin,JST</item>
-        <item>Rena,JST</item>
-        <item>Lara,JST</item>
-        <item>Cora,JST</item>
-        <item>Cosima,ST</item>
-        <item>Julia,ST</item>
-        <item>Lilly,ST</item>
-        <item>Juliette,ST</item>
-        <item>Luna,ST</item>
-        <item>Kim,ST</item>
-        <item>Annika,ST</item>
-        <item>Katrin,ST</item>
-        <item>Anne,ST</item>
-        <item>Raphael,ST</item>
-        <item>Martin,ST</item>
-        <item>Kai,ST</item>
-        <item>Robin,ST</item>
-        <item>Nick,ST</item>
-        <item>Daniel,ST</item>
-    </string-array>
 
     <string name="hello_world">Hello world!</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_browse_results">BrowseResults</string>
     <string name="title_activity_interval_training">IntervalTraining</string>
+    <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_headers">HeadersActivity</string>
 
 </resources>

@@ -63,12 +63,12 @@ public class SwipeDetector implements View.OnTouchListener {
                         if (deltaY < 0) {
                             Log.d(logTag, "Swipe Top to Bottom");
                             mSwipeDetected = Action.TB;
-                            return true;
+                            return false; // ignore
                         }
                         if (deltaY > 0) {
                             Log.d(logTag, "Swipe Bottom to Top");
                             mSwipeDetected = Action.BT;
-                            return true;
+                            return false; // ignore
                         }
                     }
                 return true;
