@@ -30,6 +30,13 @@ public class Result implements Serializable {
     }
 
     public int getAvg() {
+        if (avg == 0 && splitTime.size() > 0) {
+            int sumSplit =0;
+            for (Integer stime : splitTime) {
+                sumSplit += stime;
+            }
+            avg = sumSplit / splitTime.size();
+        }
         return avg;
     }
 

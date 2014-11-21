@@ -34,4 +34,14 @@ public class Competition implements Serializable {
     public static Swimming.SwimStyle parseSwimStyle(String s) {
         return swimStyle.find(s.substring( s.length() - 1, s.length()));
     }
+
+    public static int getSelected() {
+        String comp = getShortDesc();
+        for (int i = 0; i < allCompetitions.length; i++) {
+            if (comp.equals(allCompetitions[i])) {
+                return i;
+            }
+        }
+        return -1;
+    }
 }

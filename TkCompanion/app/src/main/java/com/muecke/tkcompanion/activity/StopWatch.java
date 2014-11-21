@@ -28,6 +28,7 @@ public class StopWatch extends Activity
 
     private WatchStatus timerStatus = WatchStatus.FRESH;
     private android.content.Context context = this;
+    private int selectedCompetition;
 
 
     @Override
@@ -95,30 +96,27 @@ public class StopWatch extends Activity
             @Override
             public void onClick(View view) {
                 if (!timerStatus.equals(WatchStatus.RUNNING)) {
-                    final AlertDialog.Builder sendOffDialog = new AlertDialog.Builder(context);
+                    final AlertDialog.Builder competitionDialog = new AlertDialog.Builder(context);
 
-                    sendOffDialog.setTitle("Competition");
-                    sendOffDialog.setMessage("Define competition.");
-
-                    // Set an EditText view to get user input
-                    final EditText sendOffInput = new EditText(context);
-                    sendOffInput.setText(Competition.getShortDesc());
-                    sendOffDialog.setView(sendOffInput);
-
-                    sendOffDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            Competition.parse(sendOffInput.getText().toString());
+                    competitionDialog.setTitle("Filter");
+                    competitionDialog.setSingleChoiceItems(Competition.allCompetitions, Competition.getSelected(), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            //set to buffKey instead of selected
+                            //(when cancel not save to selected)
+                            selectedCompetition = which;
+                        }
+                    });
+                    competitionDialog.setCancelable(false);
+                    competitionDialog.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int pos) {
+                            Competition.parse(Competition.allCompetitions[selectedCompetition]);
                             competition.setText(Competition.getShortDesc());
+
                         }
                     });
-
-                    sendOffDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            // Canceled.
-                        }
-                    });
-
-                    sendOffDialog.show();
+                    competitionDialog.show();
 
                 }
             }

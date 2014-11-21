@@ -3,6 +3,8 @@
 
     <string name="app_name">TkCompanion</string>
     <string name="action_settings">Settings</string>
+    <string name="action_add_swimmer">Add Swimmer</string>
+
     <string name="title_activity_stop_watch">Stopwatch</string>
     <string name="enter_text">Interval:</string>
     <string name="title_activity_interval_settings">Interval Settings</string>
@@ -12,9 +14,8 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_browse_results">BrowseResults</string>
-    <string name="title_activity_interval_training">IntervalTraining</string>
+    <string name="title_activity_browse_results">Browse Results</string>
+    <string name="title_activity_interval_training">Interval Training</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="title_activity_headers">HeadersActivity</string>
 
 </resources>

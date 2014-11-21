@@ -100,47 +100,6 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             }
         });
 
-        findViewById(R.id.button_add_swimmer).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final AlertDialog.Builder sendOffDialog = new AlertDialog.Builder(context);
-
-                sendOffDialog.setTitle("Swimmer");
-                sendOffDialog.setMessage("Add a name.");
-
-                // Set an EditText view to get user input
-                final EditText sendOffInput = new EditText(context);
-                sendOffInput.setText("Swimmer01");
-                sendOffDialog.setView(sendOffInput);
-
-                sendOffDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        PersonsDataSource ds = new PersonsDataSource(context);
-                        ds.open();
-                        Person p = ds.createPerson(sendOffInput.getText().toString(), "ST");
-                        ds.close();
-                        String session = (DateFormat.format("yyyy-MM-dd", new Date()).toString());
-                        PresenceDataSource pds = new PresenceDataSource(context);
-                        pds.open();
-                        pds.createPresence(p.getName(), session,"Pool");
-                        pds.close();
-                        p.setPresent(true);
-                        Team.allPersons.add(p);
-                        Team.team.clear();
-                    }
-                });
-
-                sendOffDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        // Canceled.
-                    }
-                });
-
-                sendOffDialog.show();
-
-
-            }
-        });
 
         File path;
         if (Environment.getExternalStorageState() == null) {
@@ -232,9 +191,18 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
 
     }
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Log.d("onSharedPreferenceChanged", key +": "+sharedPreferences.getBoolean(key,true));
+    public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
+        Log.d("onSharedPreferenceChanged", key + ": " + preferences.getBoolean(key, true));
+        if ("pref_auto_presence".equals(key)) {
+            View view = findViewById(R.id.presence_layout);
+            boolean auto_presence = preferences.getBoolean(key, true);
+            if (auto_presence) {
+                view.setVisibility(View.GONE);
+            } else {
+                view.setVisibility(View.VISIBLE);
+            }
 
+        }
     }
 
 
@@ -254,6 +222,44 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             case R.id.action_settings: {
                 Intent i = new Intent(this, SettingsActivity.class);
                 startActivity(i);
+                break;
+            }
+
+            case R.id.action_add_swimmer: {
+                final AlertDialog.Builder sendOffDialog = new AlertDialog.Builder(context);
+
+                sendOffDialog.setTitle("Swimmer");
+                sendOffDialog.setMessage("Add a name.");
+
+                // Set an EditText view to get user input
+                final EditText sendOffInput = new EditText(context);
+                sendOffInput.setText("Swimmer01");
+                sendOffDialog.setView(sendOffInput);
+
+                sendOffDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        PersonsDataSource ds = new PersonsDataSource(context);
+                        ds.open();
+                        Person p = ds.createPerson(sendOffInput.getText().toString(), "ST");
+                        ds.close();
+                        String session = (DateFormat.format("yyyy-MM-dd", new Date()).toString());
+                        PresenceDataSource pds = new PresenceDataSource(context);
+                        pds.open();
+                        pds.createPresence(p.getName(), session,"Pool");
+                        pds.close();
+                        p.setPresent(true);
+                        Team.allPersons.add(p);
+                        Team.team.clear();
+                    }
+                });
+
+                sendOffDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        // Canceled.
+                    }
+                });
+
+                sendOffDialog.show();
                 break;
             }
         }

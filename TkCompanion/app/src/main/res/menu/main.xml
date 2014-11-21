@@ -5,4 +5,10 @@
         android:title="@string/action_settings"
         android:orderInCategory="100"
         android:showAsAction="never" />
+
+    <item android:id="@+id/action_add_swimmer"
+          android:title="@string/action_add_swimmer"
+          android:orderInCategory="100"
+          android:showAsAction="never" />
+
 </menu>
