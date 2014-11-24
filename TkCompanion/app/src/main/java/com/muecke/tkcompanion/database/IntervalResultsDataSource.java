@@ -33,8 +33,12 @@ public class IntervalResultsDataSource {
 
     public void createSplitTime(String name, String sessionId, String competition, List<Integer> splitTimes) {
 
-        deleteFilteredSplits( DataManager.COLUMN_NAME + "= ? and " + DataManager.COLUMN_TE + "= ? and " + DataManager.COLUMN_COMP + "= ?",
+        try {
+            database.delete(DataManager.TABLE_IR, DataManager.COLUMN_NAME + "= ? and " + DataManager.COLUMN_TE + "= ? and " + DataManager.COLUMN_COMP + "= ?",
                     new String[]{name,sessionId,competition});
+        } catch (SQLException e) {
+            Log.d("createPresence", e.getMessage());
+        }
 
         ContentValues values = new ContentValues();
         values.put(DataManager.COLUMN_NAME, name);
@@ -53,9 +57,9 @@ public class IntervalResultsDataSource {
             stringBuilder.append(splitTime);
             total += splitTime;
         }
-        int avg = 0;
+        int avg = total;
         if (splitTimes.size() > 0) {
-            avg = total / splitTimes.size();
+            avg = avg / splitTimes.size();
         }
         values.put(DataManager.COLUMN_AVERGAE, avg);
         values.put(DataManager.COLUMN_SPLIT, stringBuilder.toString());
@@ -116,11 +120,11 @@ public class IntervalResultsDataSource {
         try {
             database.delete(DataManager.TABLE_IR, filter, filterArgs);
         } catch (SQLException e) {
-            Log.d("delete pplits: ",e.getMessage());
+            Log.e("deleteFilteredSplits", e.getMessage());
         }
     }
 
     public void tidyUp() {
-        deleteFilteredSplits( DataManager.COLUMN_AVERGAE + "= ?", new String[]{"0"});
+        deleteFilteredSplits(DataManager.COLUMN_AVERGAE+ "=?", new String[]{"0"});
     }
 }

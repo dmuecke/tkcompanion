@@ -35,8 +35,11 @@ public class PersonsDataSource {
         ContentValues values = new ContentValues();
         values.put(DataManager.COLUMN_NAME, name);
         values.put(DataManager.COLUMN_GROUP, group);
-        insertPerson(values);
-
+        try {
+            database.insert(DataManager.TABLE_PE, null, values);
+        } catch (SQLiteConstraintException e) {
+            Log.w("createPerson", e.getMessage());
+        }
         Cursor cursor = database.query(DataManager.TABLE_PE,
                 allColumns, DataManager.COLUMN_NAME + " = ?" , new String[] {name}, null, null, null);
         cursor.moveToFirst();
@@ -46,12 +49,7 @@ public class PersonsDataSource {
     }
 
     public void insertPerson(ContentValues values) throws SQLException {
-
-        try {
             database.insert(DataManager.TABLE_PE, null, values);
-        } catch (Exception e) {
-            Log.w("insertPerson", e.getMessage());
-        }
     }
 
     public void deletePerson(Person person) {

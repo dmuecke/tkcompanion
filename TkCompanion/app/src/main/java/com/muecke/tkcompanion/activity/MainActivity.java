@@ -36,7 +36,6 @@ import java.util.Date;
 
 
 public class MainActivity extends Activity implements SharedPreferences.OnSharedPreferenceChangeListener{
-    private static final int RESULT_SETTINGS = 1;
     private Context context = this;
 
     @Override
