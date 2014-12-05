@@ -8,10 +8,10 @@ public class Competition implements Serializable {
     private static Swimming.Distance distance = Swimming.Distance.SC100M;
     private static Swimming.SwimStyle swimStyle = Swimming.SwimStyle.FREE;
     public static String[] allCompetitions = new String[] {"50F", "50B", "50R", "50S", "100F", "100B", "100R", "100S", "100L",
-            "200F", "200B", "200R", "200S", "200L", "400F", "400L", "800F", "1500F"};
+            "200F", "200B", "200R", "200S", "200L", "400F", "400L", "800F", "1500F","4x50L","4x100L","4x50F","4x100F"};
 
     public static String getShortDesc() {
-        return String.format("%d%s",distance.getValue(),swimStyle.getSortDesc());
+        return String.format("%s%s",distance.getDesc(),swimStyle.getSortDesc());
     }
 
     public static void parse(String s) {

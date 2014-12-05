@@ -220,8 +220,15 @@ public class StopwatchFragment extends Fragment {
                 Swimmer swimmer = (Swimmer) parent.getItemAtPosition(position);
                 switch (timerStatus) {
                     case RUNNING: {
-                        swimmer.setLapTime(SystemClock.elapsedRealtime());
+                        long realtime = SystemClock.elapsedRealtime();
+                        swimmer.setLapTime(realtime);
+                        if (stopWatchMode == 1) {
+                            if (position + 1 < starters.size()) {
+                                starters.get(position + 1).pushOff(realtime);
+                            }
+                        }
                         swimmerAdapter.notifyDataSetChanged();
+
                         if (position + 1 == starters.size()) {
                             position = 0;
                         } else if (position > 3) {
@@ -284,7 +291,12 @@ public class StopwatchFragment extends Fragment {
         final long elapsed = (realtime - base) / 1000;
 
         switch (stopWatchMode) {
-            case 1:
+            case 1: {
+                if (elapsed == 0) {
+                    starters.get(0).pushOff(realtime);
+                }
+                break;
+            }
             case 0: {
                 if (elapsed == 0) {
                     for (Swimmer swimmer : starters) {

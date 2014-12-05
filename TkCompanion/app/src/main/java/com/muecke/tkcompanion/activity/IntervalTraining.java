@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
@@ -25,6 +26,7 @@ public class IntervalTraining extends Activity
         implements  IntervalTrainingFragment.InteractionListener {
 
     private static final int RESULT_SETTINGS = 1;
+    public static final String INTERVAL_TRAINING_TAG = "interval_training_tag";
     private IntervalTrainingFragment fragment;
 
 
@@ -41,10 +43,12 @@ public class IntervalTraining extends Activity
         if (savedInstanceState == null) {
             fragment = IntervalTrainingFragment.newInstance();
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, fragment)
+                    .add(R.id.container, fragment, INTERVAL_TRAINING_TAG)
                     .commit();
+        } else {
+            fragment = (IntervalTrainingFragment) getFragmentManager().findFragmentByTag(INTERVAL_TRAINING_TAG);
         }
-
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 
         final TextView countDown = (TextView) findViewById(R.id.count_down);

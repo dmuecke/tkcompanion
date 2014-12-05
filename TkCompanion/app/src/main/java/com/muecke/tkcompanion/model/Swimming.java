@@ -1,5 +1,7 @@
 package com.muecke.tkcompanion.model;
 
+import android.util.Log;
+
 import java.io.Serializable;
 
 public class Swimming implements Serializable {
@@ -43,20 +45,24 @@ public class Swimming implements Serializable {
     }
 
     public enum Distance {
-        SC25M(25),
-        SC50M(50),
-        SC75M(75),
-        SC100M(100),
-        SC125M(125),
-        SC200M(200),
-        SC400(400),
-        SC800M(800),
-        SC1500(1500);
+        SC25M(25,"25"),
+        SC50M(50,"50"),
+        SC75M(50,"75"),
+        SC100M(100,"100"),
+        SC125M(125,"125"),
+        SC200M(200,"200"),
+        SC400(400,"400"),
+        SC800M(800,"800"),
+        SC1500(1500,"1500"),
+        SC4X50(50,"4x50");
 
+        private String desc;
         private int value;
 
-        Distance(int value) {
+        Distance(int value,String desc) {
+
             this.value = value;
+            this.desc = desc;
         }
 
         public int getValue() {
@@ -64,19 +70,16 @@ public class Swimming implements Serializable {
         }
 
         public Distance find(String s) {
-            int i = 0;
-            try {
-                i = Integer.parseInt(s);
-            } catch (NumberFormatException e) {
-                return null;
-            }
             for (Distance distance : Distance.values()) {
-                if (i == distance.getValue()) {
+                if (s.equals(distance.getDesc())) {
                     return distance;
                 }
             }
-
             return null;
+        }
+
+        public String getDesc() {
+            return desc;
         }
     }
 

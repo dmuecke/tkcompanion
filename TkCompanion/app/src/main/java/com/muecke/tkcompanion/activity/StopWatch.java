@@ -3,6 +3,7 @@ package com.muecke.tkcompanion.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.view.Menu;
@@ -10,7 +11,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import com.muecke.tkcompanion.R;
@@ -23,6 +23,7 @@ import com.muecke.tkcompanion.model.WatchStatus;
 public class StopWatch extends Activity
     implements StopwatchFragment.InteractionListener {
     private static final int RESULT_SETTINGS = 1;
+    private static final String STOPWATCH_TAG = "stopwatch_tag";
     private StopwatchFragment fragment;
 
 
@@ -38,9 +39,13 @@ public class StopWatch extends Activity
         if (savedInstanceState == null) {
             fragment = StopwatchFragment.newInstance();
             getFragmentManager().beginTransaction()
-                    .add(R.id.container, fragment)
+                    .add(R.id.container, fragment, STOPWATCH_TAG)
                     .commit();
+        } else {
+            fragment = (StopwatchFragment) getFragmentManager().findFragmentByTag(STOPWATCH_TAG);
+
         }
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 
         final Chronometer chronometer = (Chronometer) findViewById(R.id.chronometer);

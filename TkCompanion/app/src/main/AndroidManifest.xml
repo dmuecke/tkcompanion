@@ -26,7 +26,7 @@
             android:label="@string/title_activity_list_results" >
         </activity>
         <activity
-            android:name="com.muecke.tkcompanion.activity.PresenceActivity"
+            android:name=".activity.Presence"
             android:label="@string/title_activity_availability"
             android:parentActivityName="com.muecke.tkcompanion.activity.MainActivity" >
             <meta-data

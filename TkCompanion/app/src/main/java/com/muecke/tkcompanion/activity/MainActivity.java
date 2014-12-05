@@ -66,7 +66,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     String text = "Create Swimmer first!";
                     Toast.makeText(context, text, Toast.LENGTH_LONG).show();
                 } else {
-                    Intent launchactivity= new Intent(MainActivity.this,PresenceActivity.class);
+                    Intent launchactivity= new Intent(MainActivity.this,Presence.class);
                     startActivity(launchactivity);
                 }
             }

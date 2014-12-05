@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 
-public class PresenceActivity extends Activity {
+public class Presence extends Activity {
 
     public static final String ALL = "all";
     final Context context = this;
