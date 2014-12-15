@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -239,7 +240,7 @@ public class IntervalTrainingFragment extends Fragment {
         int index = (int) (elapsed / gapTime);
         boolean pushOff = (elapsed % gapTime) == 0;
         if (index < starters.size() && pushOff) {
-            starters.get(index).pushOff(interval,realtime);
+            starters.get(index).pushOff(interval, realtime);
         }
 
         swimmerAdapter.notifyDataSetChanged();

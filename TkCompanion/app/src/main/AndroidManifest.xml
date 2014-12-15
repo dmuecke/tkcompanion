@@ -31,7 +31,7 @@
             android:parentActivityName="com.muecke.tkcompanion.activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.muecke.tkcompanion.MainActivity" />
+                android:value="com.muecke.tkcompanion.activity.MainActivity" />
         </activity>
         <activity
             android:name="com.muecke.tkcompanion.activity.StopWatch"
@@ -39,7 +39,7 @@
             android:parentActivityName="com.muecke.tkcompanion.activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.muecke.tkcompanion.MainActivity" />
+                android:value="com.muecke.tkcompanion.activity.MainActivity" />
         </activity>
         <activity
             android:name="com.muecke.tkcompanion.activity.BrowseResults"
@@ -47,7 +47,7 @@
             android:parentActivityName="com.muecke.tkcompanion.activity.MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.muecke.tkcompanion.MainActivity" />
+                android:value="com.muecke.tkcompanion.activity.MainActivity" />
         </activity>
         <activity
             android:name="com.muecke.tkcompanion.activity.IntervalTraining"

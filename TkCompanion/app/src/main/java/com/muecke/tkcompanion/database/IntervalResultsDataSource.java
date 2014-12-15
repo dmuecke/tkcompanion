@@ -81,7 +81,7 @@ public class IntervalResultsDataSource {
     public List<Result> getFilteredSplits(String filter, String[] filterArgs) {
         List<Result> splits = new ArrayList<Result>();
 
-        Cursor cursor = database.query(DataManager.TABLE_IR, allColumns, filter, filterArgs, null, null, null);
+        Cursor cursor = database.query(DataManager.TABLE_IR, allColumns, filter, filterArgs, null, null, DataManager.COLUMN_TE + " asc");
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {

@@ -6,13 +6,14 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Chronometer;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -34,6 +35,8 @@ public class IntervalTraining extends Activity
     private android.content.Context context = this;
     private int interval = 40;
     private int selectedCompetition;
+    private long chronoBase = 0;
+    private long lastElapsed = -1;
 
 
     @Override
@@ -89,22 +92,25 @@ public class IntervalTraining extends Activity
             }
         });
 
-        final Chronometer chronometer = (Chronometer) findViewById(R.id.chronometer);
-        chronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
+        final Handler handler = new Handler();
+        final Runnable chrono = new Runnable() {
             @Override
-            public void onChronometerTick(Chronometer chrono) {
+            public void run() {
+                long millis = SystemClock.elapsedRealtime() - chronoBase;
+                final long elapsed = millis / 1000;
+                if (elapsed > lastElapsed) {
+                    lastElapsed = elapsed;
 
-                if (!timerStatus.equals(WatchStatus.RUNNING)) {
-                    return;
+                    fragment.ChronometerTick( chronoBase);
+                    final int countUpTime = (int) (elapsed % interval);
+                    final int countDownTime = interval - countUpTime;
+                    countDown.setText(String.format("%02d", countDownTime));
+
                 }
-                fragment.ChronometerTick( chrono.getBase());
-                final long elapsed = (SystemClock.elapsedRealtime() - chrono.getBase()) / 1000;
-                final int countUpTime = (int) (elapsed % interval);
-                final int countDownTime = interval - countUpTime;
-                countDown.setText(String.format("%02d", countDownTime));
-            }
-        });
 
+                handler.postDelayed(this, 100);
+            }
+        };
 
         final Button startBtn = (Button) findViewById(R.id.start_button);
         startBtn.setOnClickListener(new View.OnClickListener() {
@@ -112,23 +118,24 @@ public class IntervalTraining extends Activity
             public void onClick(View view) {
                 switch (timerStatus) {
                     case RUNNING: {
-                        chronometer.stop();
+                        handler.removeCallbacks(chrono);
                         startBtn.setText("Reset");
                         timerStatus = WatchStatus.STOPPED;
                         break;
 
                     }
                     case FRESH: {
-                        chronometer.setBase(SystemClock.elapsedRealtime());
+                        chronoBase = SystemClock.elapsedRealtime();
                         startBtn.setText("Stop");
                         timerStatus = WatchStatus.RUNNING;
-                        chronometer.start();
+                        lastElapsed = -1;
+                        chrono.run();
+                        handler.postDelayed(chrono, 100);
 
                         break;
                     }
                     case STOPPED: {
                         startBtn.setText("Start");
-                        chronometer.setBase(SystemClock.elapsedRealtime());
                         timerStatus = WatchStatus.FRESH;
                         countDown.setText(String.format("%02d", interval));
                         break;

@@ -1,8 +1,8 @@
 package com.muecke.tkcompanion.model;
 
-import android.os.CountDownTimer;
 import android.os.SystemClock;
-import android.util.Log;
+
+import com.dorjeduck.xyz.AccurateCountDownTimer;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.List;
 public class Swimmer extends Person implements Serializable {
 
     private int lastLap = 0;
-    private CountDownTimer cdt;
+    private AccurateCountDownTimer cdt;
 
     public int getTtotal() {
         return ttotal;
@@ -112,7 +112,7 @@ public class Swimmer extends Person implements Serializable {
     }
 
     /*
-        Push-off interva training
+        Push-off interval training
      */
     public void pushOff(int interval, long realtime) {
         ttotal = 0;
@@ -124,7 +124,7 @@ public class Swimmer extends Person implements Serializable {
 
         round += 1;
         lastLap = 0;
-        cdt = new CountDownTimer(interval * 1000, 10  * 1000) {
+        cdt = new AccurateCountDownTimer(interval * 1000, 10  * 1000) {
             @Override
             public void onTick(long l) {
 
@@ -132,8 +132,11 @@ public class Swimmer extends Person implements Serializable {
 
             @Override
             public void onFinish() {
-                ttotal += interval * 100;
-                runCountDown(interval, SystemClock.elapsedRealtime());
+                long elapsedRealtime = SystemClock.elapsedRealtime();
+                long elapsed = elapsedRealtime - realtime;
+                ttotal += elapsed / 100;
+
+                runCountDown(interval, elapsedRealtime);
             }
         };
         cdt.start();
