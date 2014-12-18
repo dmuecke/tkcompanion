@@ -222,6 +222,8 @@ public class StopwatchFragment extends Fragment {
                     case RUNNING: {
                         long realtime = SystemClock.elapsedRealtime();
                         swimmer.setLapTime(realtime);
+                        swimmer.addLastLapToTotal();
+                        swimmer.incRound();
                         if (stopWatchMode == 1) {
                             if (position + 1 < starters.size()) {
                                 starters.get(position + 1).pushOff(realtime);

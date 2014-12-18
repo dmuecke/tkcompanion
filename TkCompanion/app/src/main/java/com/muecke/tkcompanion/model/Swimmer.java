@@ -1,6 +1,7 @@
 package com.muecke.tkcompanion.model;
 
 import android.os.SystemClock;
+import android.util.Log;
 
 import com.dorjeduck.xyz.AccurateCountDownTimer;
 
@@ -17,10 +18,17 @@ public class Swimmer extends Person implements Serializable {
         return ttotal;
     }
 
+    public void addLastLapToTotal() {
+        ttotal += lastLap;
+    }
     private int ttotal;
 
     public int getRound() {
         return round;
+    }
+
+    public void incRound() {
+        round += 1;
     }
 
     private int round;
@@ -79,15 +87,12 @@ public class Swimmer extends Person implements Serializable {
     public void setLapTime(long realtime) {
         int lapTime = (int) (realtime - startTime) / 100;
         if (lapTime > 100) {
-            ttotal += lapTime;
-            lastLap = lapTime;
             splitTime.add(lapTime);
             startTime = realtime;
-            round += 1;
+            lastLap = lapTime;
 
         }
     }
-
 
     public int getLapTime() {
         return lastLap;
@@ -124,7 +129,8 @@ public class Swimmer extends Person implements Serializable {
 
         round += 1;
         lastLap = 0;
-        cdt = new AccurateCountDownTimer(interval * 1000, 10  * 1000) {
+        Log.d("runCountDown", getName());
+        cdt = new AccurateCountDownTimer(interval * 1000, 3 * 1000) {
             @Override
             public void onTick(long l) {
 
@@ -145,19 +151,13 @@ public class Swimmer extends Person implements Serializable {
 
     public void stopInterval() {
         if (cdt != null) {
+            Log.d("stopInterval", getName());
+
             cdt.cancel();
             cdt = null;
         }
     }
 
-    public void setIntervalTime(long realtime) {
-        int lapTime = (int) ((realtime - startTime) / 100);
-        if (lapTime > 100) {
-            splitTime.add(lapTime);
-            startTime = realtime;
-            lastLap = lapTime;
-        }
-    }
 
     public Result getResult() {
         Result r = new Result(getName(), 0, "", Competition.getShortDesc(), getTtotal());

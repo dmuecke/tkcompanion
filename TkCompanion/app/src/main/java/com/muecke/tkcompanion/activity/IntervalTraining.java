@@ -107,8 +107,11 @@ public class IntervalTraining extends Activity
                     countDown.setText(String.format("%02d", countDownTime));
 
                 }
-
-                handler.postDelayed(this, 100);
+                if (timerStatus == WatchStatus.RUNNING) {
+                    handler.postDelayed(this, 50);
+                } else {
+                    handler.removeCallbacks(this);
+                }
             }
         };
 
@@ -118,7 +121,6 @@ public class IntervalTraining extends Activity
             public void onClick(View view) {
                 switch (timerStatus) {
                     case RUNNING: {
-                        handler.removeCallbacks(chrono);
                         startBtn.setText("Reset");
                         timerStatus = WatchStatus.STOPPED;
                         break;
@@ -182,6 +184,11 @@ public class IntervalTraining extends Activity
 
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        timerStatus = WatchStatus.STOPPED;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

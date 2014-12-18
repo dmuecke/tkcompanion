@@ -176,7 +176,7 @@ public class IntervalTrainingFragment extends Fragment {
                 Swimmer swimmer = (Swimmer) parent.getItemAtPosition(position);
                 switch (timerStatus) {
                     case RUNNING: {
-                        swimmer.setIntervalTime(SystemClock.elapsedRealtime());
+                        swimmer.setLapTime(SystemClock.elapsedRealtime());
                         swimmerAdapter.notifyDataSetChanged();
                         if (position + 1 == starters.size()) {
                             position = 0;
@@ -217,6 +217,11 @@ public class IntervalTrainingFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        Team.stopInterval(starters);
+    }
 
     @Override
     public void onAttach(Activity activity) {
