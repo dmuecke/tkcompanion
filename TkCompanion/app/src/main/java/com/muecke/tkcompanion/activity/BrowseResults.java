@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.text.method.CharacterPickerDialog;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.muecke.tkcompanion.R;
 import com.muecke.tkcompanion.adapter.ResultsAdapter;
@@ -22,6 +25,10 @@ import com.muecke.tkcompanion.database.IntervalResultsDataSource;
 import com.muecke.tkcompanion.database.SplitsDataSource;
 import com.muecke.tkcompanion.model.Result;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,7 +128,35 @@ public class BrowseResults extends Activity {
                 adapter.notifyDataSetChanged();
             }
         });
+        Button exportBtn = (Button) findViewById(R.id.button_export);
+        exportBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                File path;
+                if (Environment.getExternalStorageState() == null) {
+                    path = Environment.getDataDirectory();
+                } else {
+                    path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                }
+                final File file = new File(path, "swim_results.csv");
+                try {
+                    file.createNewFile();
+                    FileOutputStream stream = new FileOutputStream(file);
+                    OutputStreamWriter writer = new OutputStreamWriter(stream);
+                    for (Result result : results) {
+                        writer.append(result.getExport());
+                        writer.append("\n");
+                    }
 
+                    writer.close();
+                    stream.close();
+                    Toast.makeText(context,"Results exported.", Toast.LENGTH_LONG).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(context,"Can't create export file.", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     private void loadData(String filter,String arg) {

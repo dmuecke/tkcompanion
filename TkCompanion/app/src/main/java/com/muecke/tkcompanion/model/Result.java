@@ -51,4 +51,25 @@ public class Result implements Serializable {
     public String getCompetition() {
         return competition;
     }
+
+    public String getExport() {
+        return String.format("%s;%s;%s;%d;%d;%s",session,competition,name,avg,total,splitTimes());
+    }
+
+    private String splitTimes() {
+        StringBuilder builder = new StringBuilder();
+        boolean delim = false;
+        for (Integer split : splitTime) {
+            if (delim) {
+                builder.append(";");
+            } else {
+                delim = true;
+            }
+            builder.append(split);
+        }
+
+
+        return builder.toString();
+
+    }
 }
