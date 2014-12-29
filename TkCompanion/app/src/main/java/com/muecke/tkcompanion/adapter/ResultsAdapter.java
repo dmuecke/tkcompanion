@@ -34,6 +34,13 @@ public class ResultsAdapter extends ArrayAdapter<Result> {
         TextView avg_time = (TextView)rowView.findViewById(R.id.avg_data);
 
         Result result = getItem(position);
+        TextView view1 = (TextView) rowView.findViewById(R.id.textTotal);
+
+        if (result.isPredictedTotal()) {
+            view1.setText("Prediction: ");
+        } else {
+            view1.setText("Total: ");
+        }
         session.setText(result.getSession());
         comp_view.setText(result.getCompetition());
 

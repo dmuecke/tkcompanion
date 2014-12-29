@@ -8,7 +8,7 @@ import android.util.Log;
 public class DataManager extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "swimmers.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     public static final String TABLE_PE = "persons";
     public static final String COLUMN_NAME = "name";
@@ -49,11 +49,12 @@ public class DataManager extends SQLiteOpenHelper {
             " ); ";
     public static final String TABLE_PR = "presence";
     public static final String COLUMN_TE = "session";
-    public static final String COLUMN_LOCATION = "location";
+    public static final String COLUMN_PL = "pool";
     public static final String COLUMN_DURATION = "duration";
-    private static final String CREATE_TABLE_AV = "create table " + TABLE_PR + "( " +
+    private static final String CREATE_TABLE_PR = "create table " + TABLE_PR + "( " +
             COLUMN_NAME + " text not null, " +
-            COLUMN_TE + " text not null " +
+            COLUMN_TE + " text not null, " +
+            COLUMN_PL + " int " +
             " );";
     public static final String TABLE_IR = "interval_results";
     public static final String COLUMN_COMP = "competition";
@@ -88,7 +89,7 @@ public class DataManager extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase database) {
         database.execSQL(CREATE_TABLE_PE);
-        database.execSQL(CREATE_TABLE_AV);
+        database.execSQL(CREATE_TABLE_PR);
         database.execSQL(CREATE_TABLE_IR);
         database.execSQL(CREATE_TABLE_SP);
     }
@@ -98,9 +99,9 @@ public class DataManager extends SQLiteOpenHelper {
         Log.w(DataManager.class.getName(),
                 "Upgrading database from version " + oldVersion + " to "
                         + newVersion + ", which will destroy all old data");
-        if (newVersion == 4) {
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_IR);
-            db.execSQL(CREATE_TABLE_IR);
+        if (newVersion == 5) {
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_PR);
+            db.execSQL(CREATE_TABLE_PR);
 
         } else {
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_PE);

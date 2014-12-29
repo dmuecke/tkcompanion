@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.muecke.tkcompanion.model.Result;
-import com.muecke.tkcompanion.model.Swimmer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,10 +81,18 @@ public class IntervalResultsDataSource {
         List<Result> splits = new ArrayList<Result>();
 
         Cursor cursor = database.query(DataManager.TABLE_IR, allColumns, filter, filterArgs, null, null, DataManager.COLUMN_TE + " asc");
-
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            Result st = cursorToString(cursor);
+            Cursor c2 = database.query(DataManager.TABLE_PR, new String[]{DataManager.COLUMN_PL}, DataManager.COLUMN_TE + "=?", new String[]{cursor.getString(1)}, null, null, null);
+            c2.moveToFirst();
+            int poolSize = 2500;
+
+            if (c2.isFirst()) {
+                poolSize = c2.getInt(0);
+                Log.d("split pool size", ""+poolSize);
+            }
+            c2.close();
+            Result st = cursorToResult(cursor, poolSize);
             splits.add(st);
             cursor.moveToNext();
         }
@@ -94,8 +101,8 @@ public class IntervalResultsDataSource {
         return splits;
     }
 
-    private Result cursorToString(Cursor c) {
-        Result r = new Result(c.getString(0), c.getInt(3),c.getString(1), c.getString(2), 0);
+    private Result cursorToResult(Cursor c, int poolSize) {
+        Result r = new Result(c.getString(0), c.getInt(3),c.getString(1), c.getString(2), 0, poolSize);
         String[] strings = c.getString(4).split("/");
         for (String s : strings) {
             try {

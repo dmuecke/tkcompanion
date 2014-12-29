@@ -82,7 +82,16 @@ public class SplitsDataSource {
 
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            Result st = cursorToString(cursor);
+            Cursor c2 = database.query(DataManager.TABLE_PR, new String[]{DataManager.COLUMN_PL}, DataManager.COLUMN_TE + "=?", new String[]{cursor.getString(1)}, null, null, null);
+            c2.moveToFirst();
+            int poolSize = 2500;
+
+            if (c2.isFirst()) {
+                poolSize = c2.getInt(0);
+            }
+            c2.close();
+
+            Result st = cursorToString(cursor, poolSize);
             splits.add(st);
 
             cursor.moveToNext();
@@ -93,8 +102,8 @@ public class SplitsDataSource {
     }
 
 
-    private Result cursorToString(Cursor c) {
-        Result r = new Result(c.getString(0), 0 ,c.getString(1), c.getString(2), c.getInt(3));
+    private Result cursorToString(Cursor c, int poolSize) {
+        Result r = new Result(c.getString(0), 0 ,c.getString(1), c.getString(2), c.getInt(3), poolSize);
         String[] strings = c.getString(4).split("/");
         for (String s : strings) {
             try {

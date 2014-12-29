@@ -6,6 +6,13 @@
             android:title="Auto Presence"
             android:summary="Marks all Swimmers attendant without asking."
             android:defaultValue="true"/>
+        <ListPreference
+            android:key="pref_pool_size"
+            android:title="Pool Size"
+            android:summary="%s"
+            android:entries="@array/poolsizeentries"
+            android:entryValues="@array/poolsizevalues"
+            android:defaultValue="2500"/>
     </PreferenceCategory>
 
 </PreferenceScreen>

@@ -28,7 +28,7 @@ public class PresenceDataSource {
         dbHelper.close();
     }
 
-    public void createPresence(String name, String sessionId, String location) {
+    public void createPresence(String name, String sessionId, int pool) {
 
         try {
             database.delete(DataManager.TABLE_PR, DataManager.COLUMN_NAME + "= ? and " + DataManager.COLUMN_TE + "= ?", new String[]{name,sessionId});
@@ -39,6 +39,7 @@ public class PresenceDataSource {
         ContentValues values = new ContentValues();
         values.put(DataManager.COLUMN_NAME, name);
         values.put(DataManager.COLUMN_TE, sessionId);
+        values.put(DataManager.COLUMN_PL, pool);
 
         database.insert(DataManager.TABLE_PR, null, values);
 

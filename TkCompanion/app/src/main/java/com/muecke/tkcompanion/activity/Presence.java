@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.muecke.tkcompanion.R;
 import com.muecke.tkcompanion.adapter.PersonsAdapter;
 import com.muecke.tkcompanion.database.PresenceDataSource;
+import com.muecke.tkcompanion.model.Competition;
 import com.muecke.tkcompanion.model.Person;
 import com.muecke.tkcompanion.model.Team;
 
@@ -132,7 +133,7 @@ public class Presence extends Activity {
                 ds.open();
                 for (Person person : allPersons) {
                     if (person.isPresent()) {
-                        ds.createPresence(person.getName(), sessionName, locationName);
+                        ds.createPresence(person.getName(), sessionName, Competition.getPoolSize());
                     }
                 }
                 ds.close();

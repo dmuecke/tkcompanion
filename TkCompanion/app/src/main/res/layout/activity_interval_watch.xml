@@ -111,7 +111,7 @@
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:text="Distance:"
-            android:id="@+id/textView5"
+            android:id="@+id/textTotal"
             android:layout_toStartOf="@+id/interval_distance"
             android:layout_marginRight="10dp" />
 

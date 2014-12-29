@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="poolsizeentries">
+        <item>16.66m</item>
+        <item>25m</item>
+        <item>50m</item>
+    </string-array>
+
+    <string-array name="poolsizevalues">
+        <item>1666</item>
+        <item>2500</item>
+        <item>5000</item>
+    </string-array>
+
+</resources>

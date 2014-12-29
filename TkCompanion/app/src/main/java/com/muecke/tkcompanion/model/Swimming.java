@@ -1,7 +1,5 @@
 package com.muecke.tkcompanion.model;
 
-import android.util.Log;
-
 import java.io.Serializable;
 
 public class Swimming implements Serializable {

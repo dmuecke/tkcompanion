@@ -10,17 +10,26 @@ public class Result implements Serializable {
     private String session;
     private String competition;
     private int total;
+
+    public boolean isPredictedTotal() {
+        return predictedTotal;
+    }
+
+    private boolean predictedTotal;
     public List<Integer> splitTime = new ArrayList<Integer>();
 
-    public Result(String name, int avg, String session, String competition, int total) {
+    public Result(String name, int avg, String session, String competition, int total, int poolSize) {
         this.name = name;
         this.avg = avg;
         this.session = session;
         this.competition = competition;
         if (total == 0) { // predict total
             int dist = Competition.parseDistance(competition).getValue();
-            int mult = dist / 25; // assume 25m pool
+            int mult = dist*100 / poolSize;
             total = avg * mult;
+            predictedTotal = true;
+        } else {
+            predictedTotal = false;
         }
         this.total = total;
     }

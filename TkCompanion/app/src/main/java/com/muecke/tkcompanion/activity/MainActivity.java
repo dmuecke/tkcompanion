@@ -24,7 +24,10 @@ import com.muecke.tkcompanion.database.IntervalResultsDataSource;
 import com.muecke.tkcompanion.database.PersonsDataSource;
 import com.muecke.tkcompanion.database.PresenceDataSource;
 import com.muecke.tkcompanion.database.SplitsDataSource;
+import com.muecke.tkcompanion.model.Competition;
 import com.muecke.tkcompanion.model.Person;
+import com.muecke.tkcompanion.model.Swimmer;
+import com.muecke.tkcompanion.model.Swimming;
 import com.muecke.tkcompanion.model.Team;
 
 import java.io.BufferedReader;
@@ -44,6 +47,9 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
         prefs.registerOnSharedPreferenceChangeListener(this);
         final boolean auto_presence =prefs.getBoolean("pref_auto_presence", true);
+        final String poolSize =prefs.getString("pref_pool_size", "2500");
+        Competition.setPoolSize(Integer.valueOf(poolSize));
+
         Log.d("pref auto presence", "" + auto_presence);
         setContentView(R.layout.main);
         findViewById(R.id.button_interval).setOnClickListener(new View.OnClickListener() {
@@ -180,7 +186,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             pds.open();
 
             for (Person person : Team.allPersons) {
-                pds.createPresence(person.getName(), session, "Pool");
+                pds.createPresence(person.getName(), session, Competition.getPoolSize());
                 person.setPresent(true);
             }
             pds.close();
@@ -191,7 +197,6 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
     }
     @Override
     public void onSharedPreferenceChanged(SharedPreferences preferences, String key) {
-        Log.d("onSharedPreferenceChanged", key + ": " + preferences.getBoolean(key, true));
         if ("pref_auto_presence".equals(key)) {
             View view = findViewById(R.id.presence_layout);
             boolean auto_presence = preferences.getBoolean(key, true);
@@ -201,6 +206,20 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                 view.setVisibility(View.VISIBLE);
             }
 
+        } else if ("pref_pool_size".equals(key)) {
+            String poolSize = preferences.getString(key, "2500");
+            Competition.setPoolSize(Integer.valueOf(poolSize));
+            if (!Team.getTeam().isEmpty()) { // update current pool size for this session
+                String session = (DateFormat.format("yyyy-MM-dd", new Date()).toString());
+                PresenceDataSource pds = new PresenceDataSource(context);
+                pds.open();
+
+                for (Swimmer swimmer : Team.getTeam()) {
+                    pds.createPresence(swimmer.getName(), session, Competition.getPoolSize());
+
+                }
+                pds.close();
+            }
         }
     }
 
@@ -244,7 +263,7 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                         String session = (DateFormat.format("yyyy-MM-dd", new Date()).toString());
                         PresenceDataSource pds = new PresenceDataSource(context);
                         pds.open();
-                        pds.createPresence(p.getName(), session,"Pool");
+                        pds.createPresence(p.getName(), session, Competition.getPoolSize());
                         pds.close();
                         p.setPresent(true);
                         Team.allPersons.add(p);
