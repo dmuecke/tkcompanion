@@ -55,4 +55,24 @@ public class Competition implements Serializable {
         }
         return -1;
     }
+
+    public static int turnsPerInterval(int avgPerInterval, int poolSize) {
+        if (poolSize < 2500) {
+            if (avgPerInterval < 250) {
+                return 0;
+            } else if (avgPerInterval < 380) {
+                return 1;
+            }
+            return 2;
+        } else if (poolSize < 5000) {
+            if (avgPerInterval < 280) {
+                return 0;
+            } else if (avgPerInterval < 530){
+                return 1;
+            }
+        } else if (avgPerInterval > 600) {
+            return 1;
+        }
+        return 0;
+    }
 }

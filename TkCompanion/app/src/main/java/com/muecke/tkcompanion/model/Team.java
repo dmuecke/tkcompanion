@@ -60,13 +60,13 @@ public class Team implements Serializable {
         ds.close();
     }
 
-    public static void saveIntervals(Context context, List<Swimmer> starter) {
+    public static void saveIntervals(Context context, List<Swimmer> starter, int lanesPerInterval) {
         String session = (DateFormat.format("yyyy-MM-dd", new Date()).toString());
 
         IntervalResultsDataSource ds = new IntervalResultsDataSource(context);
         ds.open();
         for (Swimmer swimmer : starter) {
-            ds.createSplitTime(swimmer.getName(), session, Competition.getShortDesc(), swimmer.splitTime);
+            ds.createSplitTime(swimmer.getName(), session, Competition.getShortDesc() + "/"+lanesPerInterval, swimmer.splitTime);
         }
 
         ds.close();

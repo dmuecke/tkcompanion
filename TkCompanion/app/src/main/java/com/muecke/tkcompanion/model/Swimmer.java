@@ -160,7 +160,7 @@ public class Swimmer extends Person implements Serializable {
 
 
     public Result getResult() {
-        Result r = new Result(getName(), 0, "", Competition.getShortDesc(), getTtotal(), Competition.getPoolSize());
+        Result r = new Result(getName(), 0, "", Competition.getShortDesc(), getTtotal(), Competition.getPoolSize(), 1);
         r.splitTime.addAll(splitTime);
 
         return r;

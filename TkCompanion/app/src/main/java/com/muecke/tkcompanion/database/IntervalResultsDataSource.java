@@ -102,7 +102,8 @@ public class IntervalResultsDataSource {
     }
 
     private Result cursorToResult(Cursor c, int poolSize) {
-        Result r = new Result(c.getString(0), c.getInt(3),c.getString(1), c.getString(2), 0, poolSize);
+        String[] comps = c.getString(2).split("/");
+        Result r = new Result(c.getString(0), c.getInt(3),c.getString(1), comps[0], 0, poolSize, comps.length == 2 ? Integer.parseInt(comps[1]) : 1);
         String[] strings = c.getString(4).split("/");
         for (String s : strings) {
             try {

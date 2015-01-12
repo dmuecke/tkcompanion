@@ -48,10 +48,12 @@ public class IntervalTrainingFragment extends Fragment {
 
     private long gapTime = 5;
     private int interval = 40;
+    private int lanesPerInterval = 1;
 
 
 
     final List<Swimmer> starters = new ArrayList<Swimmer>();
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -268,7 +270,7 @@ public class IntervalTrainingFragment extends Fragment {
             }
             case STOPPED: {
                 Team.stopInterval(starters);
-                Team.saveIntervals(context, starters);
+                Team.saveIntervals(context, starters, lanesPerInterval);
                 break;
             }
             case FRESH: {
@@ -278,8 +280,9 @@ public class IntervalTrainingFragment extends Fragment {
         }
     }
 
-    public void setInterval(int interval) {
+    public void setInterval(int interval, int lanesPerInterval) {
         this.interval = interval;
+        this.lanesPerInterval = lanesPerInterval;
     }
 
 

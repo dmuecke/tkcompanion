@@ -4,18 +4,32 @@ import java.io.Serializable;
 
 public class Swimming implements Serializable {
     public enum SwimStyle {
-        FREE(0,"Freestyle","F"),
-        BACKSTROKE(1,"Backstroke","R"),
-        BREASTSTROKE(2,"Breaststroke","B"),
-        BUTTERFLY(3,"Butterfly","S"),
-        IM(4,"IM","L");
+        FREE(0,17,12,"Freestyle","F"),
+        BACKSTROKE(1,10,12,"Backstroke","R"),
+        BREASTSTROKE(2,12,8,"Breaststroke","B"),
+        BUTTERFLY(3,17,8,"Butterfly","S"),
+        IM(4,17,10,"IM","L");
 
         private final String desc;
         private final String shortDesc;
+
+        public int getTurn() {
+            return turn;
+        }
+
+        private final int turn;
+
+        public int getStart() {
+            return start;
+        }
+
+        private final int start;
         private int value;
 
-        SwimStyle(int value, String desc, String shortDesc) {
+        SwimStyle(int value,int start, int turn, String desc, String shortDesc) {
             this.value = value;
+            this.start = start;
+            this.turn = turn;
             this.desc=desc;
             this.shortDesc = shortDesc;
         }

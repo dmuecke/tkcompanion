@@ -18,15 +18,20 @@ public class Result implements Serializable {
     private boolean predictedTotal;
     public List<Integer> splitTime = new ArrayList<Integer>();
 
-    public Result(String name, int avg, String session, String competition, int total, int poolSize) {
+    public Result(String name, int avg, String session, String competition, int total, int poolSize, int intervalLanes) {
         this.name = name;
         this.avg = avg;
         this.session = session;
         this.competition = competition;
         if (total == 0) { // predict total
+            Swimming.SwimStyle swimStyle = Competition.parseSwimStyle(competition);
             int dist = Competition.parseDistance(competition).getValue();
-            int mult = dist*100 / poolSize;
+            int totalLanes = dist*100 / poolSize;
+            int mult = totalLanes / intervalLanes;
             total = avg * mult;
+            total -= swimStyle.getStart();
+            total += swimStyle.getTurn() * (mult - 1);
+
             predictedTotal = true;
         } else {
             predictedTotal = false;

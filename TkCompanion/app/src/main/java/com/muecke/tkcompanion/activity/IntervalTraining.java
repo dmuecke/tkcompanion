@@ -5,10 +5,12 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,7 +28,6 @@ import com.muecke.tkcompanion.model.WatchStatus;
 public class IntervalTraining extends Activity
         implements  IntervalTrainingFragment.InteractionListener {
 
-    private static final int RESULT_SETTINGS = 1;
     public static final String INTERVAL_TRAINING_TAG = "interval_training_tag";
     private IntervalTrainingFragment fragment;
 
@@ -37,6 +38,7 @@ public class IntervalTraining extends Activity
     private int selectedCompetition;
     private long chronoBase = 0;
     private long lastElapsed = -1;
+    private int lanesPerInterval = 1;
 
 
     @Override
@@ -52,7 +54,6 @@ public class IntervalTraining extends Activity
             fragment = (IntervalTrainingFragment) getFragmentManager().findFragmentByTag(INTERVAL_TRAINING_TAG);
         }
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
 
         final TextView countDown = (TextView) findViewById(R.id.count_down);
         countDown.setText(String.format("%02d",interval));
@@ -76,7 +77,7 @@ public class IntervalTraining extends Activity
                         public void onClick(DialogInterface dialog, int whichButton) {
                             interval = Integer.parseInt(input.getText().toString());
                             countDown.setText(String.format("%02d", interval));
-                            fragment.setInterval(interval);
+                            fragment.setInterval(interval, lanesPerInterval);
 
                         }
                     });
@@ -179,6 +180,32 @@ public class IntervalTraining extends Activity
 
 
                 }
+            }
+        });
+
+        final TextView lanes = (TextView) findViewById(R.id.swim_lanes);
+        lanes.setText("/"+lanesPerInterval);
+        lanes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final AlertDialog.Builder alert = new AlertDialog.Builder(context);
+
+                alert.setTitle("Lanes");
+                alert.setMessage("Lanes per Interval.");
+                final EditText input = new EditText(context);
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                input.setRawInputType(Configuration.KEYBOARD_12KEY);
+                alert.setView(input);
+                alert.setCancelable(false);
+                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        String value = input.getText().toString();
+                        lanesPerInterval = Integer.parseInt(value);
+                        lanes.setText("/"+lanesPerInterval);
+                    }
+                });
+                alert.show();
             }
         });
 

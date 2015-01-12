@@ -31,10 +31,16 @@
             android:layout_height="wrap_content"
             android:text="100F"
             android:layout_centerVertical="true"
-            android:layout_alignParentStart="true"
-            android:layout_marginLeft="10dp"
             android:textAppearance="?android:attr/textAppearanceLarge"/>
 
+        <TextView
+            android:id="@+id/swim_lanes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="/1"
+            android:layout_centerVertical="true"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:layout_toEndOf="@id/swim_competition"/>
 
         <Button
             android:layout_width="wrap_content"

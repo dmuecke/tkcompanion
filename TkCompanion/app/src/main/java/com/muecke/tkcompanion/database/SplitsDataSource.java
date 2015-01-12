@@ -103,7 +103,7 @@ public class SplitsDataSource {
 
 
     private Result cursorToString(Cursor c, int poolSize) {
-        Result r = new Result(c.getString(0), 0 ,c.getString(1), c.getString(2), c.getInt(3), poolSize);
+        Result r = new Result(c.getString(0), 0 ,c.getString(1), c.getString(2), c.getInt(3), poolSize, 1);
         String[] strings = c.getString(4).split("/");
         for (String s : strings) {
             try {
