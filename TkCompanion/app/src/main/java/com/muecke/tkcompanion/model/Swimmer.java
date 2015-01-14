@@ -13,6 +13,7 @@ public class Swimmer extends Person implements Serializable {
 
     private int lastLap = 0;
     private AccurateCountDownTimer cdt;
+    private int lanesPerInterval = 1;
 
     public int getTtotal() {
         return ttotal;
@@ -82,6 +83,7 @@ public class Swimmer extends Person implements Serializable {
         threshold = 0;
         ttotal = 0;
         lastLap = 0;
+        lanesPerInterval = 1;
     }
 
     public void setLapTime(long realtime) {
@@ -159,10 +161,14 @@ public class Swimmer extends Person implements Serializable {
     }
 
 
-    public Result getResult() {
-        Result r = new Result(getName(), 0, "", Competition.getShortDesc(), getTtotal(), Competition.getPoolSize(), 1);
+    public Result getResult(int lanesPerInterval) {
+        Result r = new Result(getName(), 0, "", Competition.getShortDesc(), getTtotal(), Competition.getPoolSize(), lanesPerInterval);
         r.splitTime.addAll(splitTime);
 
         return r;
+    }
+
+    public void setLanesPerInterval(int lanesPerInterval) {
+        this.lanesPerInterval = lanesPerInterval;
     }
 }

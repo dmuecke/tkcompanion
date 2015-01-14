@@ -244,17 +244,18 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
             }
 
             case R.id.action_add_swimmer: {
-                final AlertDialog.Builder sendOffDialog = new AlertDialog.Builder(context);
+                final AlertDialog.Builder alert = new AlertDialog.Builder(context);
 
-                sendOffDialog.setTitle("Swimmer");
-                sendOffDialog.setMessage("Add a name.");
+                alert.setTitle("Swimmer");
+                alert.setMessage("Add a name.");
 
                 // Set an EditText view to get user input
                 final EditText sendOffInput = new EditText(context);
                 sendOffInput.setText("Swimmer01");
-                sendOffDialog.setView(sendOffInput);
+                sendOffInput.setSelectAllOnFocus(true);
+                alert.setView(sendOffInput);
 
-                sendOffDialog.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         PersonsDataSource ds = new PersonsDataSource(context);
                         ds.open();
@@ -271,13 +272,13 @@ public class MainActivity extends Activity implements SharedPreferences.OnShared
                     }
                 });
 
-                sendOffDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         // Canceled.
                     }
                 });
 
-                sendOffDialog.show();
+                alert.show();
                 break;
             }
         }

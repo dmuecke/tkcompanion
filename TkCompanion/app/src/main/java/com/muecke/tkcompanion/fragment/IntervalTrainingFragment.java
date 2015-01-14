@@ -206,7 +206,7 @@ public class IntervalTrainingFragment extends Fragment {
 
                     case STOPPED: {
                         Intent launchactivity= new Intent(getActivity(),ResultDetails.class);
-                        launchactivity.putExtra("RESULT", swimmer.getResult());
+                        launchactivity.putExtra("RESULT", swimmer.getResult(lanesPerInterval));
                         startActivity(launchactivity);
 
                     }

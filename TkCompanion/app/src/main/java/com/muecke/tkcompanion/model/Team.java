@@ -66,7 +66,8 @@ public class Team implements Serializable {
         IntervalResultsDataSource ds = new IntervalResultsDataSource(context);
         ds.open();
         for (Swimmer swimmer : starter) {
-            ds.createSplitTime(swimmer.getName(), session, Competition.getShortDesc() + "/"+lanesPerInterval, swimmer.splitTime);
+            swimmer.setLanesPerInterval(lanesPerInterval);
+            ds.createSplitTime(swimmer.getName(), session, Competition.getShortDesc() + "/" + lanesPerInterval, swimmer.splitTime);
         }
 
         ds.close();

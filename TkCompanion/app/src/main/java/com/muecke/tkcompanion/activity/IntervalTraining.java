@@ -70,6 +70,9 @@ public class IntervalTraining extends Activity
 
                     // Set an EditText view to get user input
                     final EditText input = new EditText(context);
+                    input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    input.setRawInputType(Configuration.KEYBOARD_12KEY);
+                    input.setSelectAllOnFocus(true);
                     input.setText(String.valueOf(interval));
                     intervalDialog.setView(input);
 
@@ -82,11 +85,7 @@ public class IntervalTraining extends Activity
                         }
                     });
 
-                    intervalDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            // Canceled.
-                        }
-                    });
+                    intervalDialog.setCancelable(false);
 
                     intervalDialog.show();
                 }
@@ -195,6 +194,8 @@ public class IntervalTraining extends Activity
                 final EditText input = new EditText(context);
                 input.setInputType(InputType.TYPE_CLASS_NUMBER);
                 input.setRawInputType(Configuration.KEYBOARD_12KEY);
+                input.setText(""+lanesPerInterval);
+                input.setSelectAllOnFocus(true);
                 alert.setView(input);
                 alert.setCancelable(false);
                 alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {

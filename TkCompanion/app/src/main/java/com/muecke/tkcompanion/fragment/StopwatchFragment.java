@@ -258,7 +258,7 @@ public class StopwatchFragment extends Fragment {
 
                     case STOPPED: {
                         Intent launchactivity= new Intent(getActivity(),ResultDetails.class);
-                        launchactivity.putExtra("RESULT", swimmer.getResult());
+                        launchactivity.putExtra("RESULT", swimmer.getResult(1));
                         startActivity(launchactivity);
 
                     }
