@@ -58,11 +58,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="50dp"
-                android:background="#fff"
-                android:cacheColorHint="#00000000"
                 android:divider="#8A8A8A"
                 android:dividerHeight="0.9dp"
-                android:listSelector="#ccc"
                 android:scrollingCache="true"
                 android:fastScrollAlwaysVisible="false"
                 android:fastScrollEnabled="false"/>
